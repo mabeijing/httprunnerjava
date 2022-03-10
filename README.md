@@ -104,3 +104,45 @@ private HashMap<String, LazyContent> content = new HashMap<>();
 LazyContent用来存放不许解析的非字符串类，LazyString用来存放需要解析的字符串类，如果LazyString中可以匹配到自定义变量和方法的正则，则进行处理，否则跳过。
 
 为何取名LazyString？因为变量会在实际使用到时才会进行解析，是一种懒解析形式。
+
+### 4.如何实现参数化用例
+在自动化测试中，经常会遇到如下场景：
+> * 测试搜索功能，只有一个搜索输入框，但有10种不同类型的搜索关键字；
+> * 测试账号登录功能，需要输入用户名和密码，按照等价类划分后有20种组合情况。
+
+可以使用testng的参数化方法，构造重复的用户数据
+详情可以参考项目test目录下的request_with_parameters_test类
+```
+public static List<Map<String,Object>> getParams() {
+        return Parse.parse_parameters(new HashMap<String, Object>() {{
+                                          put("user_agent", Arrays.asList("iOS/10.1", "iOS/10.2"));
+                                          put("username-password", "${parameterize(request_methods/account.csv)}");
+                                          put("app_version", "${get_app_version()}");
+                                      }}
+        );
+    }
+
+    @Override
+    @DataProvider(name="HrunDataProvider")
+    public Iterator<Object[]> createData(){
+        List<Object[]> users = new ArrayList<>();
+        for (TStep u : this.get__teststeps()) {
+            for(Map<String,Object> each : getParams()){
+                users.add(new Object[]{u,each});
+            }
+        }
+
+        return users.iterator();
+    }
+```
+
+### 5.实现 hook 机制
+在自动化测试中，通常在测试开始前需要做一些预处理操作，以及在测试结束后做一些清理性的工作。
+
+例如，测试使用手机号注册账号的接口：
+
+> * 测试开始前需要确保该手机号未进行过注册，常用的做法是先在数据库中删除该手机号相关的账号数据（若存在）；
+> * 测试结束后，为了减少对测试环境的影响，常用的做法是在数据库中将本次测试产生的相关数据删除掉。
+
+可以使用testng自带的@beforclass @beforetest等注解，也可以使用上面样例中的
+setup_hook 和 teardown_hook方法，同样支持自定义方法
