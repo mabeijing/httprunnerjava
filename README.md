@@ -85,6 +85,7 @@ class TStep{
 
 ### 2.复杂的to_value方法实现
 上一步方案把所有的内容解析，都放在了to_value中，to_value如何实现呢？
+
 首先可以确认，to_value的实现离不开a)上下文中的变量 b)自定义方法的实现类，所以方法的传参一定是
 ```
 public ParseableIntfCls to_value(Variables variables_mapping, Class function) {}
@@ -99,8 +100,11 @@ public ParseableIntfCls to_value(Variables variables_mapping, Class function) {}
 private HashMap<String, LazyContent> content = new HashMap<>();
 ```
 其中key为变量名，value为待解析的值，以上面with_variables参数为例
+
 待解析的值包括两个，${sum_two(1,2)} 和 $foo5
+
 设计两个类：LazyContent 和 LazyString extends LazyContent，后者是前者的子类
+
 LazyContent用来存放不许解析的非字符串类，LazyString用来存放需要解析的字符串类，如果LazyString中可以匹配到自定义变量和方法的正则，则进行处理，否则跳过。
 
 为何取名LazyString？因为变量会在实际使用到时才会进行解析，是一种懒解析形式。
@@ -145,4 +149,5 @@ public static List<Map<String,Object>> getParams() {
 > * 测试结束后，为了减少对测试环境的影响，常用的做法是在数据库中将本次测试产生的相关数据删除掉。
 
 可以使用testng自带的@beforclass @beforetest等注解，也可以使用上面样例中的
+
 setup_hook 和 teardown_hook方法，同样支持自定义方法
