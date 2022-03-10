@@ -1,4 +1,3 @@
-
 # 欢迎使用 HttpRunner For Java
 
 ------
@@ -51,3 +50,57 @@ new Step(
 )
 
 ```
+
+## 接口测试的核心要素
+对于基础的接口测试框架，最最核心的要素可以概括为
+> * 发起接口请求（Request）
+> * 解析接口响应（Response）
+> * 检查接口测试结果
+
+项目一期首先支持http请求，java下的http请求框架非常多，最终选择了okHttp作为请求的客户端使用。
+
+## 测试用例执行引擎
+case样例上文已经展示，拆解case中的各个参数很简单，但是如何实现变量的传递和自定义方法的执行呢？
+
+### 1.接口内容存储
+首先设计多种成员类，比如header部分设计Header类,变量参数部分设计Variables类，可解析的类，继承ParseableIntf接口，这样可解析的部分就可以简化为：
+```
+class TStep{
+    private Header header;
+    private Param param;
+    private Header header;
+    private Variables var;
+    
+    @override
+    public ParseableIntf to_value() {
+        //needParseMember包含了所有需解析的成员变量
+        //to_value是所有ParseableIntf接口实现类都要实现的一个方法
+        this.needParseMember.forEach(e ->
+            Optional.ofNullable(e)).to_value()
+        );
+        return this;
+    }
+}
+```
+
+### 2.复杂的to_value方法实现
+上一步方案把所有的内容解析，都放在了to_value中，to_value如何实现呢？
+首先可以确认，to_value的实现离不开a)上下文中的变量 b)自定义方法的实现类，所以方法的传参一定是
+```
+public ParseableIntfCls to_value(Variables variables_mapping, Class function) {}
+```
+
+### 3.所有用例中传入的参数都是strting，如何解析？
+上文的case样例中，所有传参都是string格式，比如
+```with_variables("{'foo1': 'bar11', 'foo2': 'bar21', 'sum_v': '${sum_two(1,2)}', 'foo4': '$foo5',}")```
+首先依照原版约定，自定义变量的表现形式为$variables,自定义函数的表现形式为${function(var1,var2)}
+对于 header param 一类的内容，内部可以用一个简单map存储内容
+```
+private HashMap<String, LazyContent> content = new HashMap<>();
+```
+其中key为变量名，value为待解析的值，以上面with_variables参数为例
+待解析的值包括两个，${sum_two(1,2)} 和 $foo5
+设计两个类：LazyContent 和 LazyString extends LazyContent，后者是前者的子类
+LazyContent用来存放不许解析的非字符串类，LazyString用来存放需要解析的字符串类，如果LazyString中可以匹配到自定义变量和方法的正则，则进行处理，否则跳过。
+
+为何取名LazyString？因为变量会在实际使用到时才会进行解析，是一种懒解析形式。
