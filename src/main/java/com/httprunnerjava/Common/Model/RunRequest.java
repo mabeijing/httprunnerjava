@@ -30,10 +30,21 @@ public class RunRequest implements PerformableIntf {
         return this;
     }
 
+    public RunRequest setup_hook_no_throw_exception(String hook){
+        __step_context.getSetup_hooks().addNoThrowException(hook);
+        return this;
+    }
+
+
     public RunRequest teardown_hook(String hook){
         //TODO：
         // if assign_var_name: assign_var_name 含义未知，先不实现
         __step_context.getTeardown_hooks().add(hook);
+        return this;
+    }
+
+    public RunRequest teardown_hook_no_throw_exception(String hook){
+        __step_context.getTeardown_hooks().addNoThrowException(hook);
         return this;
     }
 

@@ -29,6 +29,10 @@ public class RunTestCase {
         return this;
     }
 
+    public RunTestCase setup_hook_no_throw_exception(String hook){
+        __step_context.getSetup_hooks().addNoThrowException(hook);
+        return this;
+    }
     public StepRefCase call(Class<? extends HttpRunner> testcase){
         if(testcase.getSuperclass().getName().contains("HttpRunner")) {
             __step_context.setTestcase(testcase);

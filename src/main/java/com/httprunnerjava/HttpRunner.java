@@ -310,13 +310,26 @@ public class HttpRunner {
             if (hook.getType() == 1) {
                 // format 1: ["${func()}"]
                 logger.debug("call hook function: {}", hook.getFuncHook());
-                Parse.parse_data(hook.getFuncHook(), step_variables, project_meta.getFunctions());
+                try{
+                    Parse.parse_data(hook.getFuncHook(), step_variables, project_meta.getFunctions());
+                }catch(Exception e){
+                    e.printStackTrace();
+                    if(!hook.getNoThrowException()) {
+                        throw e;
+                    }
+                }
             } else if(hook.getType() == 2 && hook.getMapHook().size() == 1) {
                 // format 2: {"var": "${func()}"}
                 Map.Entry<LazyString,LazyString> entry = hook.getMapHook().entrySet().iterator().next();
-                Object hook_content_eval = Parse.parse_data(
-                        entry.getValue(), step_variables, project_meta.getFunctions()
-                );
+                try{
+                    Parse.parse_data(
+                            entry.getValue(), step_variables, project_meta.getFunctions()
+                    );
+                }catch (Exception e){
+                    e.printStackTrace();
+                    if(!hook.getNoThrowException())
+                        throw e;
+                }
                 logger.debug(
                         "call hook function: {}, got value: {}",
                         entry.getValue().getRaw_value(),
@@ -473,7 +486,9 @@ public class HttpRunner {
                 Allure.step(String.format("step: %s", step.getName()));
             }
             extract_mapping = this.runStep(step);
-        } catch ( ValidationFailureException e) {
+//        } catch ( ValidationFailureException e) {
+//            throw e;
+        } catch (Exception e){
             throw e;
         }
 

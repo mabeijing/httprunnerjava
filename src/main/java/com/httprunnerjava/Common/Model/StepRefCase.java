@@ -13,9 +13,12 @@ public class StepRefCase {
 
     public StepRefCase teardown_hook(String hook){
         //TODO：if assign_var_name:
-
         __step_context.getTeardown_hooks().add(hook);
+        return this;
+    }
 
+    public StepRefCase teardown_hook_no_throw_exception(String hook){
+        __step_context.getTeardown_hooks().addNoThrowException(hook);
         return this;
     }
 
