@@ -9,10 +9,7 @@ import com.httprunnerjava.Common.Component.Variables;
 import com.httprunnerjava.Parse;
 import com.httprunnerjava.Utils.JsonUtils;
 import com.httprunnerjava.builtin.Comparator;
-import com.httprunnerjava.exceptions.ExcpUtil;
-import com.httprunnerjava.exceptions.HrunBizException;
-import com.httprunnerjava.exceptions.HrunExceptionFactory;
-import com.httprunnerjava.exceptions.ValidationFailureException;
+import com.httprunnerjava.exceptions.*;
 import lombok.Data;
 import okhttp3.Response;
 import org.slf4j.Logger;
@@ -185,8 +182,9 @@ public class ResponseObject {
             }
         }catch(Exception e){
             e.printStackTrace();
+            throw new ExtractParamError("需要导出的变量未找到，变量的路径为" + expr);
         }
-        return null;
+
     }
 
     public Variables extract(HashMap<String,String> extractors, Variables variables_mapping, Class<?> functions_mapping) {

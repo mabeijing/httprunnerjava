@@ -5,6 +5,7 @@ import com.httprunnerjava.Common.Component.Variables;
 import com.httprunnerjava.HttpSession;
 import com.httprunnerjava.builtin.Comparator;
 import com.httprunnerjava.exceptions.HrunExceptionFactory;
+import com.httprunnerjava.exceptions.LazyStringParseError;
 import com.httprunnerjava.exceptions.VariableNotFound;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -129,6 +130,7 @@ public class LazyString extends LazyContent<String> implements Serializable, Par
                     }
                 }catch(Exception e){
                     e.printStackTrace();
+                    throw new LazyStringParseError(e.getMessage());
                 }
 
                 String func_raw_str = "${" + func_name + "(" + func_params_str + ")}";

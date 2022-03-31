@@ -6,14 +6,11 @@ import com.httprunnerjava.Common.Component.Enum.MethodEnum;
 import com.httprunnerjava.Common.Component.LazyContent.LazyString;
 import com.httprunnerjava.Common.Model.*;
 import com.httprunnerjava.Utils.CommonUtils;
-import com.httprunnerjava.exceptions.ExecuteFailureException;
-import com.httprunnerjava.exceptions.ParamsError;
-import com.httprunnerjava.exceptions.ValidationFailureException;
+import com.httprunnerjava.exceptions.*;
 import okhttp3.Response;
 import com.httprunnerjava.Common.Model.RunningAttribute.StepData;
 import com.httprunnerjava.Common.Model.TModel.TConfig;
 import com.httprunnerjava.HrunLogger.LoggerSetting;
-import com.httprunnerjava.exceptions.HrunExceptionFactory;
 import lombok.Data;
 import java.util.*;
 import java.util.Optional;
@@ -522,9 +519,8 @@ public class HttpRunner {
         }catch (Exception e) {
             logger.error("手动执行case失败");
             e.printStackTrace();
+            throw new ManualExecuteCaseException("手动执行case失败");
         }
-
-        return null;
     }
 
     // 手动执行teststep的入口
@@ -538,9 +534,8 @@ public class HttpRunner {
         }catch (Exception e) {
             logger.error("手动执行case失败");
             e.printStackTrace();
+            throw new ManualExecuteCaseException("手动执行case失败");
         }
-
-        return null;
     }
 
     public void manual_test_start(Map<String,Object> param){
@@ -585,6 +580,8 @@ public class HttpRunner {
             if(this.getConfig().getCatchAllExpection()){
                 logger.error("执行过程中捕获到异常，但不影响后续执行，错误信息如下");
                 e.printStackTrace();
+            }else{
+                throw e;
             }
         } finally {
             logger.info("TODO：generate testcase log: {self.__log_path}");
@@ -630,6 +627,7 @@ public class HttpRunner {
                 extract_mapping = this.runStep(step);
             }catch(Exception e){
                 e.printStackTrace();
+                throw e;
             }
 
             extracted_variables.update(extract_mapping);
