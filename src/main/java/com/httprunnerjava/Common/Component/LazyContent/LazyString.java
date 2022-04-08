@@ -129,7 +129,7 @@ public class LazyString extends LazyContent<String> implements Serializable, Par
                         }
                     }
                 }catch(Exception e){
-                    e.printStackTrace();
+                    logger.error(String.valueOf(e.getStackTrace()));
                     throw new LazyStringParseError(e.getMessage());
                 }
 

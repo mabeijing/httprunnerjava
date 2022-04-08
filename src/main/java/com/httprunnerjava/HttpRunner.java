@@ -280,7 +280,7 @@ public class HttpRunner {
                 logger.error("嵌套的testcase类中未包含config和teststep成员变量，或两者两边为空");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
             logger.error("暂时不支持HttpRunner类以外的case嵌套");
             //TODO： step.tostring方法需要添加一下
             throw new ParamsError("Invalid teststep referenced testcase" + step);
@@ -305,15 +305,16 @@ public class HttpRunner {
         logger.info("call hook actions: {}", hook_msg);
         for (Hooks.HookString hook : hooks.getContent()) {
             if (hook.getType() == 1) {
-                // format 1: ["${func()}"]
+                // format 1: "${func()}"
                 logger.debug("call hook function: {}", hook.getFuncHook());
                 try{
                     Parse.parse_data(hook.getFuncHook(), step_variables, project_meta.getFunctions());
                 }catch(Exception e){
-                    e.printStackTrace();
+                    logger.error("钩子函数执行异常，执行的钩子函数是：" + hook.toString());
                     if(!hook.getNoThrowException()) {
                         throw e;
                     }
+
                 }
             } else if(hook.getType() == 2 && hook.getMapHook().size() == 1) {
                 // format 2: {"var": "${func()}"}
@@ -323,7 +324,7 @@ public class HttpRunner {
                             entry.getValue(), step_variables, project_meta.getFunctions()
                     );
                 }catch (Exception e){
-                    e.printStackTrace();
+                    logger.error("钩子函数执行异常，执行的钩子函数是：" + hook.toString());
                     if(!hook.getNoThrowException())
                         throw e;
                 }
@@ -449,7 +450,7 @@ public class HttpRunner {
             if(session == null)
                 session = new HttpSession(this);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
             logger.error("创建HttpSession对象失败");
         }
 
@@ -518,7 +519,7 @@ public class HttpRunner {
             return httprunner;
         }catch (Exception e) {
             logger.error("手动执行case失败");
-            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
             throw new ManualExecuteCaseException("手动执行case失败");
         }
     }
@@ -533,7 +534,7 @@ public class HttpRunner {
             return httprunner;
         }catch (Exception e) {
             logger.error("手动执行case失败");
-            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
             throw new ManualExecuteCaseException("手动执行case失败");
         }
     }
@@ -579,7 +580,7 @@ public class HttpRunner {
         }catch(Exception e){
             if(this.getConfig().getCatchAllExpection()){
                 logger.error("执行过程中捕获到异常，但不影响后续执行，错误信息如下");
-                e.printStackTrace();
+                logger.error(String.valueOf(e.getStackTrace()));
             }else{
                 throw e;
             }
@@ -626,7 +627,7 @@ public class HttpRunner {
                 Allure.step(String.format("step: %s", step.getName()));
                 extract_mapping = this.runStep(step);
             }catch(Exception e){
-                e.printStackTrace();
+                logger.error(String.valueOf(e.getStackTrace()));
                 throw e;
             }
 

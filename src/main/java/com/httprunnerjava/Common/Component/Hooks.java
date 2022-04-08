@@ -22,23 +22,6 @@ public class Hooks {
         //钩子函数失败后，是否可以跳过继续执行该case的标记
         private Boolean noThrowException;
 
-//        public HookString(Integer type, String hookStr){
-//            if(type == 1) {
-//                this.type = 1;
-//                funcHook = new LazyString(hookStr);
-//            }
-//            else if(type == 2){
-//                mapHook = new HashMap<>();
-//                this.type = 2;
-//                JSONObject temp = JSONObject.parseObject(hookStr);
-//                for(Map.Entry<String,Object> each : temp.entrySet()){
-//                    LazyString key = new LazyString(each.getKey());
-//                    LazyString value = new LazyString(each.getValue().toString());
-//                    mapHook.put(key,value);
-//                }
-//            }
-//        }
-
         public HookString(Integer type, String hookStr,Boolean noThrowException){
             if(type == 1) {
                 this.type = 1;
@@ -55,6 +38,15 @@ public class Hooks {
                     mapHook.put(key,value);
                 }
                 this.noThrowException = noThrowException;
+            }
+        }
+
+        public String toString(){
+            if(type == 1){
+                return funcHook.raw_value;
+            }else{
+                return "{" + mapHook.keySet().iterator().next().toString() + ":" +
+                        getMapHook().values().iterator().next().raw_value + "}";
             }
         }
     };

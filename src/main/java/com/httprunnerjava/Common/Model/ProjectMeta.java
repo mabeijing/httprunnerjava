@@ -9,7 +9,7 @@ public class ProjectMeta {
 
     public static Class<?> functions;
 
-    public void setFunctions(Class<?> cls){
+    public void setFunctions(Class<?> cls) {
         functions = cls;
     }
 
@@ -17,7 +17,7 @@ public class ProjectMeta {
         return functions;
     }
 
-    public ProjectMeta(){
+    public ProjectMeta() {
         //TODO:默认加载debugtalk作为内部function对象
         functions = Debugtalk.class;
     }

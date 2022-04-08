@@ -2,6 +2,8 @@ package com.httprunnerjava;
 
 
 import com.httprunnerjava.builtin.Comparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -12,6 +14,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 public class CompilerFile {
+
+    private static Logger logger = LoggerFactory.getLogger(CompilerFile.class);
 
     private static final JavaCompiler compiler;
 
@@ -36,13 +40,13 @@ public class CompilerFile {
                     logger.debug("Compile Java File:" + file);
             } */
         }catch(Exception e){
-            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
         }finally{
             if(manager!=null){
                 try {
                     manager.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(String.valueOf(e.getStackTrace()));
                 }
             }
         }
@@ -82,7 +86,7 @@ public class CompilerFile {
                 }
                 return baos.toByteArray();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(String.valueOf(e.getStackTrace()));
             }
             return null;
         }
@@ -127,7 +131,7 @@ public class CompilerFile {
             javac(ops,filePath);
             return load(project_working_directory,clsName);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
         }
         return null;
     }
@@ -137,7 +141,7 @@ public class CompilerFile {
         try{
             return Comparator.class;
         }catch (Exception e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
         }
         return null;
     }
@@ -157,7 +161,7 @@ public class CompilerFile {
             Object obj = cls.newInstance();
             result = method.invoke(obj, params);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
         }
         return result;
     }

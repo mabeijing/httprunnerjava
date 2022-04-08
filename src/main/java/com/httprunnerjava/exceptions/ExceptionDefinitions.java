@@ -46,7 +46,7 @@ public class ExceptionDefinitions {
             message = (String) getDefinitions().get(errorCode);
         } catch (IOException e) {
             this.logger.error(String.format("Error message for [code=%s] is not defined", errorCode));
-            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
         }
         if (message.equals("")) {
             message = String.format("系统错误[ErrorType = ERROR_MESSAGE_DEFINITION, ErrorCode=%s]", errorCode);

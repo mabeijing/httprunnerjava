@@ -46,7 +46,7 @@ public class CommonUtils {
             clonedObj = (T) ois.readObject();
             ois.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
         }
         return clonedObj;
     }

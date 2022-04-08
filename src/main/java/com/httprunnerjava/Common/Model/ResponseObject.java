@@ -71,7 +71,7 @@ public class ResponseObject {
             try {
                 assert_func = Parse.get_mapping_function(assert_method, functions_mapping);
             }catch (Exception e) {
-                e.printStackTrace();
+                logger.error(String.valueOf(e.getStackTrace()));
             }
 
             // expect item
@@ -181,7 +181,7 @@ public class ResponseObject {
                 }
             }
         }catch(Exception e){
-            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
             throw new ExtractParamError("需要导出的变量未找到，变量的路径为" + expr);
         }
 
