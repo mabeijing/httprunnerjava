@@ -337,11 +337,11 @@ public class HttpRunner {
                 try{
                     hook.getFuncHook().parse(stepVariables, projectMeta.getFunctions());
                 }catch(Exception e){
-                    log.error("钩子函数执行异常，执行的钩子函数是：" + hook.toString());
                     if(!hook.getNoThrowException()) {
+                        log.error("钩子函数执行异常，执行的钩子函数是：" + hook.toString());
                         throw e;
                     }
-
+                    log.warn("钩子函数执行异常，但不会终端用例执行，出现错误的钩子函数是：" + hook.toString());
                 }
             } else if(hook.getType() == 2 && hook.getMapHook().size() == 1) {
                 // format 2: {"var": "${func()}"}
@@ -351,9 +351,11 @@ public class HttpRunner {
                             stepVariables, projectMeta.getFunctions()
                     );
                 }catch (Exception e){
-                    log.error("钩子函数执行异常，执行的钩子函数是：" + hook.toString());
-                    if(!hook.getNoThrowException())
+                    if(!hook.getNoThrowException()) {
+                        log.error("钩子函数执行异常，执行的钩子函数是：" + hook.toString());
                         throw e;
+                    }
+                    log.warn("钩子函数执行异常，但不会终端用例执行，出现错误的钩子函数是：" + hook.toString());
                 }
                 log.debug(
                         "call hook function: {}, got value: {}",
@@ -492,7 +494,7 @@ public class HttpRunner {
 
     // 手动执行teststep的入口
     // 手动执行所有的步骤
-    public void manualExecuteAllTestStart(Map<String, Object> params){
+    public void manualExecuteAllTestStep(Map<String, Object> params){
         try{
             setUseAllure(false);
 
@@ -502,8 +504,20 @@ public class HttpRunner {
                 testStart(step, params);
             }
         }catch (Exception e) {
-            log.error("手动执行case失败");
+            log.error("手动执行case失败！");
             throw e;
         }
     }
+
+    public void manualExecuteSingleTeststep(Integer index, Map<String, Object> params){
+        try{
+            setUseAllure(false);
+            beforeTestStart();
+            testStart(getTeststeps().get(index), params);
+        }catch (Exception e) {
+            log.error("手动执行单步case失败！");
+            throw e;
+        }
+    }
+
 }

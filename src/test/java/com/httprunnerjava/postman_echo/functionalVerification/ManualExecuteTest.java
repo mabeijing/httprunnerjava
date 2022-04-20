@@ -19,6 +19,6 @@ public class ManualExecuteTest {
         Map<String, Object> params = new HashMap<>();
         params.put("userId","5FXXXXX");
         ManualAllTest manualAllTest = new ManualAllTest();
-        manualAllTest.manualExecuteAllTestStart(params);
+        manualAllTest.manualExecuteAllTestStep(params);
     }
 }
