@@ -63,7 +63,11 @@ public class Debugtalk {
         System.out.println("start sleep!");
     }
 
-    public String getAccountId(String uId){
-        return "abcd1234NGTF";
+    public String getAccountId(String accountId){
+        return accountId;
+    }
+
+    public String getUserId(String uId){
+        return uId;
     }
 }

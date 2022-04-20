@@ -1,10 +1,8 @@
-package com.httprunnerjava.Utils;
+package com.httprunnerjava.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.httprunnerjava.Common.Component.Variables;
-import com.httprunnerjava.exceptions.HrunExceptionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.httprunnerjava.exception.HrunExceptionFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -15,9 +13,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 public class CommonUtils {
-
-    private static Logger logger = LoggerFactory.getLogger(CommonUtils.class);
 
     static Pattern absolute_http_url_regexp_compile = Pattern.compile("^https://.*|^http://.*");
 
@@ -46,17 +43,9 @@ public class CommonUtils {
             clonedObj = (T) ois.readObject();
             ois.close();
         } catch (Exception e) {
-            logger.error(String.valueOf(e.getStackTrace()));
+            log.error(String.valueOf(e.toString()));
         }
         return clonedObj;
-    }
-
-
-
-    public static Variables merge_variables(Variables variables, Variables variables_to_be_overridden){
-        Variables merged_variables = deepcopy_obj(variables_to_be_overridden);
-        merged_variables.update(variables);
-        return merged_variables;
     }
 
     public static Map parseJsonStrToMap(String str){
@@ -64,12 +53,12 @@ public class CommonUtils {
             Map json = JSONObject.parseObject(str, Map.class);
             return json;
         }catch (Exception e){
-            logger.error("解析JSON中出现错误，待解析的字符串是：" + str);
+            log.error("解析JSON中出现错误，待解析的字符串是：" + str);
             throw e;
         }
     }
 
-    public static String build_url(String base_url,String path){
+    public static String buildUrl(String base_url,String path){
         if(absolute_http_url_regexp_compile.matcher(path).matches()){
             return path;
         }

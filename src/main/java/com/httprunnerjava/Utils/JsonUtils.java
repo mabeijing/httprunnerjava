@@ -1,16 +1,30 @@
-package com.httprunnerjava.Utils;
+package com.httprunnerjava.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.httprunnerjava.builtin.Comparator;
-import com.httprunnerjava.exceptions.HrunExceptionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.httprunnerjava.exception.CompareError;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.Map;
+
+/**
+ * @Author: ChuCan
+ * @CreatedDate: 2022-04-07-1:51
+ * @Description:
+ */
+@Slf4j
 public class JsonUtils {
 
-    static Logger logger = LoggerFactory.getLogger(Comparator.class);
+    public static Map parseJsonStrToMap(String str){
+        try {
+            Map json = JSONObject.parseObject(str, Map.class);
+            return json;
+        }catch (Exception e){
+            log.error("解析JSON中出现错误，待解析的字符串是：" + str);
+            throw e;
+        }
+    }
 
     public static void compareJsons(JSONObject json1, JSONObject json2, String key){
         commonCompare(json1,json2,key);
@@ -42,15 +56,15 @@ public class JsonUtils {
         //方案2的实现：
         for (Object o1 : jsonArray1) {
             if (!jsonArray2.contains(o1)) {
-                logger.error("不一致：key  " + key + " json1中的 jsonArray其中的value ： " + JSONObject.toJSONString(o1) + "  仅在json1中存在，不在json2中存在");
-                HrunExceptionFactory.create("E0071");
+                log.error("不一致：key  " + key + " json1中的 jsonArray其中的value ： " + JSONObject.toJSONString(o1) + "  仅在json1中存在，不在json2中存在");
+                throw new CompareError("JSON比对结果不一致");
             }
         }
 
         for (Object o2 : jsonArray2) {
             if (!jsonArray1.contains(o2)) {
-                System.err.println("不一致：key " + key + " json2中的 jsonArray其中的value ： " + JSONObject.toJSONString(o2) + "  仅在json2中存在，不在json1中存在");
-                HrunExceptionFactory.create("E0071");
+                log.error("不一致：key " + key + " json2中的 jsonArray其中的value ： " + JSONObject.toJSONString(o2) + "  仅在json2中存在，不在json1中存在");
+                throw new CompareError("JSON比对结果不一致");
             }
         }
     }
@@ -63,12 +77,12 @@ public class JsonUtils {
         boolean isDifferent = false;
         for (Object o1 : expect_value) {
             if (!check_value.contains(o1)) {
-                logger.error("不一致：key  " + o1 + " 接口返回的check_value并不包含该key");
+                log.error("不一致：key  " + o1 + " 接口返回的check_value并不包含该key");
                 isDifferent = true;
             }
         }
         if(isDifferent)
-            HrunExceptionFactory.create("E0071");
+            throw new CompareError("JSON比对结果不一致");
     }
 
     public static void compareJsons(String json1,String json2,String key){
@@ -77,7 +91,7 @@ public class JsonUtils {
             System.out.println("一致：key " + key + " ， json1 value = " + json1 + " json2 value = " + json2);
         } else {
             System.err.println("不一致： key " + key + " ， json1 value = " + json1 + " json2 value = " + json2 );
-            HrunExceptionFactory.create("E0071");
+            throw new CompareError("JSON比对结果不一致");
         }
 
     }
@@ -88,11 +102,11 @@ public class JsonUtils {
         }
         if (json1 == null){
             System.err.println("不一致： key " + key + " 在json1中不存在，在json2中为 " + JSONObject.toJSONString(json2) );
-            HrunExceptionFactory.create("E0071");
+            throw new CompareError("JSON比对结果不一致");
         }
         if (json2 == null){
             System.err.println("不一致： key " + key + " 在json1中为 " + JSONObject.toJSONString(json2) + " 在json2中不存在" );
-            HrunExceptionFactory.create("E0071");
+            throw new CompareError("JSON比对结果不一致");
         }
     }
 
@@ -115,5 +129,4 @@ public class JsonUtils {
         }
         return data;
     }
-
 }

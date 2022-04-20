@@ -19,10 +19,10 @@ public class LogbackColorful extends ForegroundCompositeConverterBase<ILoggingEv
                 return ANSIConstants.YELLOW_FG;
             //INFO等级为蓝色
             case Level.INFO_INT:
-                return ANSIConstants.GREEN_FG;
+                return ANSIConstants.BLUE_FG;
             //DEBUG等级为绿色
             case Level.DEBUG_INT:
-                return ANSIConstants.CYAN_FG;
+                return ANSIConstants.GREEN_FG;
             //其他为默认颜色
             default:
                 return ANSIConstants.DEFAULT_FG;

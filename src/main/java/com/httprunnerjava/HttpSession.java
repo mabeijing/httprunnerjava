@@ -1,27 +1,29 @@
 package com.httprunnerjava;
 
 import com.alibaba.fastjson.JSONException;
-import com.httprunnerjava.Common.Component.Enum.MethodEnum;
-import com.httprunnerjava.Common.Component.Headers;
-import com.httprunnerjava.Common.Component.LazyContent.LazyContent;
-import com.httprunnerjava.Common.Component.LazyContent.LazyString;
-import com.httprunnerjava.Common.Component.Params;
-import com.httprunnerjava.Common.Component.TRequest;
-import com.httprunnerjava.Common.Model.Intf.reqOrResp;
-import com.httprunnerjava.Common.Model.ResponseObject;
-import com.httprunnerjava.Common.Model.RunningAttribute.ReqRespData;
-import com.httprunnerjava.Common.Model.RunningAttribute.RequestData;
-import com.httprunnerjava.Common.Model.RunningAttribute.ResponseData;
-import com.httprunnerjava.Common.Model.RunningAttribute.SessionData;
-import com.httprunnerjava.exceptions.HrunExceptionFactory;
+import com.httprunnerjava.exception.HrunBizException;
+import com.httprunnerjava.exception.HrunExceptionFactory;
+import com.httprunnerjava.exception.UnknowError;
+import com.httprunnerjava.model.Enum.MethodEnum;
+import com.httprunnerjava.model.component.atomsComponent.request.Headers;
+import com.httprunnerjava.model.component.atomsComponent.request.Params;
+import com.httprunnerjava.model.component.intf.reqOrResp;
+import com.httprunnerjava.model.component.moleculesComponent.TRequest;
+import com.httprunnerjava.model.lazyLoading.LazyContent;
+import com.httprunnerjava.model.lazyLoading.LazyString;
+import com.httprunnerjava.model.runningData.*;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okio.Buffer;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -31,10 +33,14 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @Author: ChuCan
+ * @CreatedDate: 2022-04-07-1:45
+ * @Description:
+ */
 @Data
+@Slf4j
 public class HttpSession {
-
-    static Logger logger = LoggerFactory.getLogger(HttpSession.class);
 
     private OkHttpClient okHttpClient;
 
@@ -63,7 +69,7 @@ public class HttpSession {
             Request request = chain.request();
             Response response = chain.proceed(request);
 
-            logger.info(chain.connection().socket().getRemoteSocketAddress().toString());
+            log.info(chain.connection().socket().getRemoteSocketAddress().toString());
             return response ;
         };
     }
@@ -83,47 +89,53 @@ public class HttpSession {
         };
     }
 
-    public HttpSession(HttpRunner httpRunner) throws NoSuchAlgorithmException, KeyManagementException {
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(null, new TrustManager[] { getTrustManager() }, null);
-        SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+    public HttpSession(HttpRunner httpRunner) {
+        try{
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, new TrustManager[] { getTrustManager() }, null);
+            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
-        OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
+            OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
 
-        if(httpRunner.getConfig().getIsDebug().equals(true))
-            okHttpClientBuilder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8888)));
+            if(httpRunner.getConfig().getIsProxy().equals(true))
+                okHttpClientBuilder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8888)));
 
-        Integer timeOut = httpRunner.getConfig().getTimeOut();
-        okHttpClient = okHttpClientBuilder
-                //设置读取超时时间
-                .readTimeout(timeOut, TimeUnit.SECONDS)
-                //设置写的超时时间
-                .writeTimeout(timeOut, TimeUnit.SECONDS)
-                .connectTimeout(timeOut, TimeUnit.SECONDS)
-                .sslSocketFactory(sslSocketFactory, getTrustManager())
-                .addNetworkInterceptor(getInterceptor())
-                .cookieJar(getCookieJar())
-                .build();
+            Integer timeOut = httpRunner.getConfig().getTimeOut();
+            okHttpClient = okHttpClientBuilder
+                    //设置读取超时时间
+                    .readTimeout(timeOut, TimeUnit.SECONDS)
+                    //设置写的超时时间
+                    .writeTimeout(timeOut, TimeUnit.SECONDS)
+                    .connectTimeout(timeOut, TimeUnit.SECONDS)
+                    .sslSocketFactory(sslSocketFactory, getTrustManager())
+                    .addNetworkInterceptor(getInterceptor())
+                    .cookieJar(getCookieJar())
+                    .build();
+        }catch (Exception e){
+            log.error("创建HttpSession对象失败，失败原因是 %s",e.getMessage());
+            log.debug(e.getStackTrace().toString());
+            HrunExceptionFactory.create("E0001");
+        }
+
     }
 
-    public Response request(MethodEnum method, String url, TRequest request)
-            throws Exception {
+    public Response request(MethodEnum method, String url, TRequest request) {
         this.data = new SessionData();
 
-        long start_timestamp = System.currentTimeMillis();
-        Response response = this._send_request_safe_mode(method, url, request);
-        long response_time_ms = System.currentTimeMillis() - start_timestamp;
+        long startTimestamp = System.currentTimeMillis();
+        Response response = sendRequestSafeMode(method, url, request);
+        long responseTimeMs = System.currentTimeMillis() - startTimestamp;
 
         //TODO：低优先级 获取ip地址
         // try:z
         //        client_ip, client_port = response.raw.connection.sock.getsockname()
 
-        long content_size = (response.body() != null &&response.body().contentLength() == -1) ?
+        long contentSize = (response.body() != null &&response.body().contentLength() == -1) ?
                 0 : response.body().contentLength();
 
         // record the consumed time
-        this.getData().getStat().setResponse_time_ms((float) response_time_ms);
-        this.getData().getStat().setContent_size((float) content_size);
+        this.getData().getStat().setResponseTimeMs(responseTimeMs);
+        this.getData().getStat().setContentSize(contentSize);
 
         // record request and response histories, include 30X redirection
         //TODO: response.history记录的是请求重定向的内容，暂时不支持重定向
@@ -133,19 +145,17 @@ public class HttpSession {
         // try:
         //     response.raise_for_status()
 
-        this.getData().setReq_resps(Collections.singletonList(get_req_resp_record(response)));
+        this.getData().setReqResps(Collections.singletonList(getReqRespRecord(response)));
 
-        logger.info(String.format("status_code: %s, response_time(ms): %s ms, response_length: %s bytes",
+        log.info(String.format("status_code: %s, response_time(ms): %s ms, response_length: %s bytes",
                 response.code(),
-                response_time_ms,
-                content_size));
+                responseTimeMs,
+                contentSize));
 
         return response;
     }
 
-    public Response _send_request_safe_mode(MethodEnum method, String url, TRequest tRequest)
-            throws Exception
-    {
+    public Response sendRequestSafeMode(MethodEnum method, String url, TRequest tRequest) {
         Response response = null;
         switch(method){
             case GET:
@@ -156,8 +166,9 @@ public class HttpSession {
                     Request request = requestBuilder.url(parseUrl(url,tRequest.getParams())).get().build();
                     response = okHttpClient.newCall(request).execute();
                 }catch (IOException e){
-                    logger.error("请求接口报错，请检查");
-                    throw e;
+                    log.error("请求接口报错，请根据日志检查请求是否准确，报错原始信息如下");
+                    log.error(HrunBizException.toStackTrace(e));
+                    HrunExceptionFactory.create("E0005");
                 }
                 break;
             case POST:
@@ -169,7 +180,7 @@ public class HttpSession {
                             orElse(new LazyString("")).getEvalValue().toString();
                     if(contentType.contains("application/json")){
                         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
-                        requestBody = RequestBody.create(tRequest.getReq_json().getEvalString(),mediaType);
+                        requestBody = RequestBody.create(tRequest.getReqJson().getEvalString(),mediaType);
                     }else if(contentType.contains("application/form-data")){
 
                     }else if(contentType.contains("application/x-www-form-urlencoded")){
@@ -183,8 +194,9 @@ public class HttpSession {
                     Request request = requestBuilder.url(parseUrl(url,tRequest.getParams())).post(requestBody).build();
                     response = okHttpClient.newCall(request).execute();
                 }catch (Exception e){
-                    logger.error("请求接口报错，请检查");
-                    throw e;
+                    log.error("请求接口报错，请根据日志检查请求是否准确，报错原始信息如下");
+                    log.error(HrunBizException.toStackTrace(e));
+                    HrunExceptionFactory.create("E0005");
                 }
         }
 
@@ -207,12 +219,12 @@ public class HttpSession {
         if(params.getContent().size() != 0)
             urlBuilder.append("?");
 
-        for(Map.Entry<String, LazyContent<?>> entry : params.getContent().entrySet()){
-            urlBuilder.append(entry.getKey())
-                      .append("=")
-                      .append(entry.getValue().getEvalValue())
-                      .append("&");
-        }
+        params.getContent().entrySet().forEach( each ->
+                urlBuilder.append(each.getKey())
+                          .append("=")
+                          .append(each.getValue().getEvalValue())
+                          .append("&")
+        );
 
         url = urlBuilder.toString();
         if(url.endsWith("&"))
@@ -221,70 +233,71 @@ public class HttpSession {
         return HttpUrl.parse(url);
     }
 
-    public ReqRespData get_req_resp_record(Response resp_obj){
-        Headers request_headers = new Headers(resp_obj.request().headers());
-        String request_cookies = Optional.ofNullable(resp_obj.request().header("Cookie")).orElse("");
+    public ReqRespData getReqRespRecord(Response respObj){
+        Headers requestHeaders = new Headers(respObj.request().headers());
+        String requestCookies = Optional.ofNullable(respObj.request().header("Cookie")).orElse("");
 
-        String request_body_str = "";
-        RequestBody request_body = resp_obj.request().body();
+        String requestBodyStr = "";
+        RequestBody requestBody = respObj.request().body();
         try{
             String str = "";
-            if(request_body != null && request_body.contentLength() != 0L){
+            if(requestBody != null && requestBody.contentLength() != 0L){
                 final Buffer buffer = new Buffer();
-                request_body.writeTo(buffer);
+                requestBody.writeTo(buffer);
                 str = buffer.readUtf8();
             }
 
-            request_body_str =
-                    (request_body != null && request_body.contentLength() != 0L) ? str : "";
+            requestBodyStr =
+                    (requestBody != null && requestBody.contentLength() != 0L) ? str : "";
 
-            LazyContent<?> request_content_type = request_headers.getContent().get("content-type");
+            LazyContent<?> requestContentType = requestHeaders.getContent().get("content-type");
             //TODO:低优先级
-            // if request_content_type and "multipart/form-data" in request_content_type:
-            //     request_body = "upload file stream (OMITTED)"
+            // if requestContentType and "multipart/form-data" in requestContentType:
+            //     requestBody = "upload file stream (OMITTED)"
         }catch (IOException e){
-            HrunExceptionFactory.create("E0065");
+            HrunExceptionFactory.create("E0006");
         }
 
-        RequestData request_data = new RequestData(resp_obj.request().method(),
-                resp_obj.request().url().toString(),
-                request_headers,
-                request_cookies,
-                request_body_str
-                );
-        log_print(request_data,"request");
+        RequestData requestData = new RequestData(respObj.request().method(),
+                respObj.request().url().toString(),
+                requestHeaders,
+                requestCookies,
+                requestBodyStr
+        );
+        logPrint(requestData,"request");
 
-        Headers resp_headers = new Headers(resp_obj.headers());
-        LazyContent<?> content_type = resp_headers.getContent().get("content-type");
+        Headers respHeaders = new Headers(respObj.headers());
+        LazyContent<?> contentType = respHeaders.getContent().get("content-type");
         //TODO:
-        // if "image" in content_type:
-        String resp_text = "";
+        // if "image" in contentType:
+        String respText = "";
         try{
-            resp_text = resp_obj.body().string();
-            ResponseObject.setCurrentRespBody(resp_text);
+            respText = respObj.body().string();
+            ResponseObject.setCurrentRespBody(respText);
         }catch (IOException e){
-
+            // TODO:异常的处理
+            HrunExceptionFactory.create("E0007");
         }catch(JSONException e){
 
         }
 
-        ResponseData response_data = new ResponseData(resp_obj.code(),
-                resp_headers,
+        ResponseData responseData = new ResponseData(respObj.code(),
+                respHeaders,
                 "",
-                resp_obj.body().contentType().toString(),
-                resp_obj.header("content-type"),
-                resp_text
+                respObj.body().contentType().toString(),
+                respObj.header("content-type"),
+                respText
         );
-        log_print(response_data,"response");
+        logPrint(responseData,"response");
 
-        return new ReqRespData(request_data, response_data);
+        return new ReqRespData(requestData, responseData);
     }
 
-    public void log_print(reqOrResp req_or_resp, String r_type){
-        String msg = String.format("\n================== %s details ==================\n",r_type);
+    public void logPrint(reqOrResp reqOrResp, String rType){
+        String msg = String.format("\n================== %s details ==================\n",rType);
 
-        msg += req_or_resp.toString();
-        logger.debug(msg);
+        msg += reqOrResp.toString();
+        log.debug(msg);
     }
+
 }
-
