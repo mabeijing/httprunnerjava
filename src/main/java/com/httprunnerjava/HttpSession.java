@@ -33,11 +33,6 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @Author: ChuCan
- * @CreatedDate: 2022-04-07-1:45
- * @Description:
- */
 @Data
 @Slf4j
 public class HttpSession {

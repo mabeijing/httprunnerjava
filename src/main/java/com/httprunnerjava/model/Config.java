@@ -1,11 +1,5 @@
 package com.httprunnerjava.model;
 
-/**
- * @Author: cc
- * @CreatedDate: 2022-04-01-23:48
- * @Description: 测试用例的配置，可以用来定义用例的全局变量，url域名，导出文件，参数化等内容
- */
-
 import com.httprunnerjava.model.component.atomsComponent.response.Export;
 import com.httprunnerjava.model.component.atomsComponent.request.Variables;
 import com.httprunnerjava.model.lazyLoading.*;

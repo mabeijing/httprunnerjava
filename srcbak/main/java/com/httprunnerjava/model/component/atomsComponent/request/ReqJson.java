@@ -11,11 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-12-17:07
- * @Description:
- */
 @Data
 @Slf4j
 public class ReqJson {

@@ -10,11 +10,6 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-14-17:10
- * @Description:
- */
 @Getter
 public class ExportTest extends HttpRunner {
 

@@ -5,11 +5,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-08-23:29
- * @Description:
- */
 @Data
 @NoArgsConstructor
 public class TestCase {

@@ -2,11 +2,6 @@ package com.httprunnerjava.model.component.atomsComponent.response;
 
 import lombok.Data;
 
-/**
- * @Author: ChuCan
- * @CreatedDate: 2022-04-07-1:40
- * @Description:
- */
 @Data
 public class Validator {
     private String checkItem;

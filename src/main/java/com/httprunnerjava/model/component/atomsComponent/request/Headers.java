@@ -11,11 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-12-16:53
- * @Description:
- */
 @Data
 public class Headers implements Serializable {
     private HashMap<String, LazyContent> content = new HashMap<>();

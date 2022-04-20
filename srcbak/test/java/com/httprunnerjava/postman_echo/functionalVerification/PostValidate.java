@@ -9,11 +9,6 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-19-23:21
- * @Description:
- */
 @Getter
 public class PostValidate extends HttpRunner {
 

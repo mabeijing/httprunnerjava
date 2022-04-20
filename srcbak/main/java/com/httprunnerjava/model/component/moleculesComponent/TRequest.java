@@ -15,11 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @Author: ChuCan
- * @CreatedDate: 2022-04-07-1:38
- * @Description:
- */
 @Data
 @NoArgsConstructor
 public class TRequest {

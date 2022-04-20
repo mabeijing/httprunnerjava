@@ -16,11 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-09-1:17
- * @Description:
- */
 public class Loader {
 
     // 这里和hrun原版稍有差别，如果以后想支持多线程执行，那么线程变量必不可少，其实这里也是一种推测，目前也用不到

@@ -8,11 +8,6 @@ import com.httprunnerjava.model.component.RunRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-18-23:12
- * @Description:
- */
 public class WrongValidate extends HttpRunner {
 
     private Config config = new Config("config_name with variables,the viriables is $$foo: $foo1")

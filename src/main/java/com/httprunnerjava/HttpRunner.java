@@ -12,10 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * @Author: cc
- * @CreatedDate: 2022-04-01 23:48
- * @Description: HttpRunnerForJava的主类，也是所有方法的入口类，所有基于HttpRunnerForJava的测试用例，都需要继承该类
  */
 
 package com.httprunnerjava;
