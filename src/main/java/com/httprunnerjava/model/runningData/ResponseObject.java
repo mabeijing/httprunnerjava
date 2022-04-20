@@ -194,7 +194,6 @@ public class ResponseObject {
                 }
             }
         }catch(Exception e){
-            log.error(String.valueOf(e.getStackTrace()));
             throw new VariableNotFound("需要导出的变量未找到，变量的路径为" + expr);
         }
 

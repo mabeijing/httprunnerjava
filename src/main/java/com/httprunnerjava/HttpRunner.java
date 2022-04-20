@@ -502,9 +502,8 @@ public class HttpRunner {
                 testStart(step, params);
             }
         }catch (Exception e) {
-            log.error("手动执行case失败，原始报错信息如下：");
-            log.error(HrunBizException.toStackTrace(e));
-            HrunExceptionFactory.create("E0010");
+            log.error("手动执行case失败");
+            throw e;
         }
     }
 }
