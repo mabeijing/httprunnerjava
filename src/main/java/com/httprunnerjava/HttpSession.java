@@ -279,7 +279,7 @@ public class HttpSession {
         ResponseData responseData = new ResponseData(respObj.code(),
                 respHeaders,
                 "",
-                respObj.body().contentType().toString(),
+                respObj.body().contentType() == null ? "NULL" : respObj.body().contentType().toString(),
                 respObj.header("content-type"),
                 respText
         );
