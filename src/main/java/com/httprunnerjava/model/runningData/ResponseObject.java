@@ -139,8 +139,7 @@ public class ResponseObject {
                         failures.add(validate_msg);
                     }else{
                         //如果捕获的异常不属于HrunBizException，则是反射方法执行时出错，需要输出详细的错误信息
-                        log.error(e.toString());
-                        log.error("work exception" + ExcpUtil.getStackTraceString(e));
+                        log.error("work exception" + HrunBizException.toStackTrace(e));
                     }
                 } else {
                     log.error(e.toString());

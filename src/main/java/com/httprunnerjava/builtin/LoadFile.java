@@ -8,11 +8,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-22-0:12
- * @Description:
- */
 public class LoadFile {
 
     public static String loadResourcesFileAsString(String filePath) throws IOException {
