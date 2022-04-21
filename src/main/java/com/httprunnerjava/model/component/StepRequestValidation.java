@@ -15,7 +15,12 @@ public class StepRequestValidation extends Step{
     }
 
     public StepRequestValidation assertEqual(String jmesPath, Object expectedValue, String message) {
-        getValidators().add(new Validator("equals",jmesPath,expectedValue,message));
+        getValidators().add(new Validator("objectEequals",jmesPath,expectedValue,message));
+        return this;
+    }
+
+    public StepRequestValidation jsonEqual(String jmesPath, Object expectedValue){
+        getValidators().add(new Validator("jsonEquals",jmesPath, expectedValue, null));
         return this;
     }
 

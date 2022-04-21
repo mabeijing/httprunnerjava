@@ -20,44 +20,44 @@ public class Comparator<T> {
         cls = t1.getClass();
     }
 
-    public void equals(T check_value, T expect_value) {
-        if (!check_value.equals(expect_value)) {
-            logger.error("期望值是：" + check_value + ",实际值是：" + expect_value);
+    public void objectEequals(T checkalue, T expectValue) {
+        if (!checkalue.equals(expectValue)) {
+            logger.error("期望值是：" + checkalue + ",实际值是：" + expectValue);
             throw new CompareError("比对结果与预期不一致");
         }
     }
 
-    public void typeMatch(T check_value, T expect_value) {
+    public void typeMatch(T checkalue, T expectValue) {
         //TODO:未实现
 
     }
 
-    public void lessThan(T check_value, T expect_value) {
-        if (check_value instanceof Integer) {
-            assert (Integer) check_value < (Integer) expect_value;
-        } else if (check_value instanceof Double) {
+    public void lessThan(T checkalue, T expectValue) {
+        if (checkalue instanceof Integer) {
+            assert (Integer) checkalue < (Integer) expectValue;
+        } else if (checkalue instanceof Double) {
             //TODO: int 和 double 有没有大于小于的比较？
-            assert (Double) check_value < (Double) expect_value;
+            assert (Double) checkalue < (Double) expectValue;
         } else {
             throw new CompareError("比对结果与预期不一致");
         }
     }
 
-    public void listContains(T check_value, Object expect_value) {
-        JSONArray expect_value_array;
-            if (check_value instanceof JSONArray) {
-                if (expect_value instanceof String) {
-                    expect_value_array = JSON.parseArray(expect_value.toString());
-                    JsonUtils.containJsonArray((JSONArray) check_value, expect_value_array, null);
+    public void listContains(T checkalue, Object expectValue) {
+        JSONArray expectValueArray;
+            if (checkalue instanceof JSONArray) {
+                if (expectValue instanceof String) {
+                    expectValueArray = JSON.parseArray(expectValue.toString());
+                    JsonUtils.containJsonArray((JSONArray) checkalue, expectValueArray, null);
                 }
             } else {
                 throw new CompareError("比对结果与预期不一致");
         }
     }
 
-    public void listEmpty(T check_value, Object expect_value) {
-        if (check_value instanceof List) {
-            if (!(((List) check_value).size() == 0)) {
+    public void listEmpty(T checkalue, Object expectValue) {
+        if (checkalue instanceof List) {
+            if (!(((List) checkalue).size() == 0)) {
                 throw new CompareError("比对结果与预期不一致");
             }
         } else {
@@ -65,9 +65,13 @@ public class Comparator<T> {
         }
     }
 
-    public void notListEmpty(T check_value, Object expect_value) {
-        if (check_value instanceof List) {
-            if ((((List) check_value).size() == 0)) {
+    public void jsonEquals(Object checkalue, Object expectValue) {
+        JsonUtils.compareJson(checkalue, expectValue);
+    }
+
+    public void notListEmpty(T checkalue, Object expectValue) {
+        if (checkalue instanceof List) {
+            if ((((List) checkalue).size() == 0)) {
                 throw new CompareError("比对结果与预期不一致");
             }
         } else {

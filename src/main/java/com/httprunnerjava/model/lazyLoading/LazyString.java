@@ -172,18 +172,30 @@ public class LazyString extends LazyContent<String>{
             classed[0] = Object.class;
             classed[1] = Object.class;
             method = built_in_functions.getMethod(functionName,classed);
+            if(method != null)
+                return method;
         }catch(Exception e){
             log.debug(String.format("方法 %s 在builtin中没有找到",functionName));
         }
 
         //TODO：debugtalk中的函数不支持函数重载
-        if(method == null) {
-            for (Method each : functionsMapping.getMethods()) {
+        for (Method each : functionsMapping.getMethods()) {
+            if (each.getName().equals(functionName)) {
+                method = each;
+                return method;
+            }
+        }
+
+        try {
+            Class<?> loadFileClass = Loader.loadLoadFileClass();
+            for (Method each : loadFileClass.getMethods()) {
                 if (each.getName().equals(functionName)) {
                     method = each;
                     return method;
                 }
             }
+        } catch (Exception e) {
+                log.debug(String.format("方法 %s 在LoadFile中没有找到", functionName));
         }
 
         if(method == null) {
@@ -191,7 +203,7 @@ public class LazyString extends LazyContent<String>{
             throw new ParseError("");
         }
 
-        return method;
+        return null;
     }
 
     public static Map parseFunctionParams(String params) {

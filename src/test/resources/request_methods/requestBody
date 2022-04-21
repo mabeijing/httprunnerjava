@@ -1,0 +1,212 @@
+{
+    "c": "0",
+    "m": "",
+    "d": {
+        "totalCount": 212,
+        "count": 10,
+        "hasMore": true,
+        "result": [
+            {
+                "siCode": "DIAMOND_VIP",
+                "instanceId": "3FO4K6EIDMD2",
+                "sourceId": 7,
+                "code": "SI0000kd4bj",
+                "status": 1,
+                "type": 0,
+                "isBindUser": false,
+                "validityPeriod": {
+                    "startTime": 1649666750000,
+                    "endTime": 1662566399000,
+                    "validStartTime": 1649666750000,
+                    "validEndTime": 1662566399000,
+                    "startUsingTime": 1649666750000,
+                    "expireUsingTime": 1662566399000,
+                    "startHoldingTime": 1649666558000,
+                    "expireHoldingTime": 1655368958000,
+                    "validityUsingPeriod": 149
+                }
+            },
+            {
+                "siCode": "DIAMOND_VIP",
+                "instanceId": "3FO4K6F0B4T9",
+                "sourceId": 7,
+                "code": "SI0000k7umr",
+                "status": 1,
+                "type": 0,
+                "isBindUser": false,
+                "validityPeriod": {
+                    "startTime": 1646814253000,
+                    "endTime": 1662739199000,
+                    "validStartTime": 1646814253000,
+                    "validEndTime": 1662739199000,
+                    "startUsingTime": 1646814253000,
+                    "expireUsingTime": 1662739199000,
+                    "startHoldingTime": 1646621869000,
+                    "expireHoldingTime": 1647917869000,
+                    "validityUsingPeriod": 184
+                }
+            },
+            {
+                "siCode": "DIAMOND_VIP",
+                "instanceId": "3FO4K6F0B86A",
+                "sourceId": 7,
+                "code": "SI0000k7unq",
+                "status": 1,
+                "type": 0,
+                "isBindUser": false,
+                "validityPeriod": {
+                    "startTime": 1646814253000,
+                    "endTime": 1662739199000,
+                    "validStartTime": 1646814253000,
+                    "validEndTime": 1662739199000,
+                    "startUsingTime": 1646814253000,
+                    "expireUsingTime": 1662739199000,
+                    "startHoldingTime": 1646621869000,
+                    "expireHoldingTime": 1647917869000,
+                    "validityUsingPeriod": 184
+                }
+            },
+            {
+                "siCode": "DIAMOND_VIP",
+                "instanceId": "3FO4K6F09EMQ",
+                "sourceId": 7,
+                "code": "SI0000k7upp",
+                "status": 1,
+                "type": 0,
+                "isBindUser": false,
+                "validityPeriod": {
+                    "startTime": 1646814253000,
+                    "endTime": 1662739199000,
+                    "validStartTime": 1646814253000,
+                    "validEndTime": 1662739199000,
+                    "startUsingTime": 1646814253000,
+                    "expireUsingTime": 1662739199000,
+                    "startHoldingTime": 1646621869000,
+                    "expireHoldingTime": 1647917869000,
+                    "validityUsingPeriod": 184
+                }
+            },
+            {
+                "siCode": "DIAMOND_VIP",
+                "instanceId": "3FO4K6F09HYR",
+                "sourceId": 7,
+                "code": "SI0000k7uqn",
+                "status": 1,
+                "type": 0,
+                "isBindUser": false,
+                "validityPeriod": {
+                    "startTime": 1646814253000,
+                    "endTime": 1662739199000,
+                    "validStartTime": 1646814253000,
+                    "validEndTime": 1662739199000,
+                    "startUsingTime": 1646814253000,
+                    "expireUsingTime": 1662739199000,
+                    "startHoldingTime": 1646621869000,
+                    "expireHoldingTime": 1647917869000,
+                    "validityUsingPeriod": 184
+                }
+            },
+
+            {
+                "siCode": "DIAMOND_VIP",
+                "instanceId": "3FO4K6F08WWL",
+                "sourceId": 7,
+                "code": "SI0000k7uwf",
+                "status": 1,
+                "type": 0,
+                "isBindUser": false,
+                "validityPeriod": {
+                    "startTime": 1646814253000,
+                    "endTime": 1662739199000,
+                    "validStartTime": 1646814253000,
+                    "validEndTime": 1662739199000,
+                    "startUsingTime": 1646814253000,
+                    "expireUsingTime": 1662739199000,
+                    "startHoldingTime": 1646621869000,
+                    "expireHoldingTime": 1647917869000,
+                    "validityUsingPeriod": 184
+                }
+            },
+            {
+                "siCode": "DIAMOND_VIP",
+                "instanceId": "3FO4K6F0919M",
+                "sourceId": 7,
+                "code": "SI0000k7utj",
+                "status": 1,
+                "type": 0,
+                "isBindUser": false,
+                "validityPeriod": {
+                    "startTime": 1646814253000,
+                    "endTime": 1662739199000,
+                    "validStartTime": 1646814253000,
+                    "validEndTime": 1662739199000,
+                    "startUsingTime": 1646814253000,
+                    "expireUsingTime": 1662739199000,
+                    "startHoldingTime": 1646621869000,
+                    "expireHoldingTime": 1647917869000,
+                    "validityUsingPeriod": 184
+                }
+            },
+            {
+                "siCode": "DIAMOND_VIP",
+                "instanceId": "3FO4K6F08TKK",
+                "sourceId": 7,
+                "code": "SI0000k7uvg",
+                "status": 1,
+                "type": 0,
+                "isBindUser": false,
+                "validityPeriod": {
+                    "startTime": 1646814253000,
+                    "endTime": 1662739199000,
+                    "validStartTime": 1646814253000,
+                    "validEndTime": 1662739199000,
+                    "startUsingTime": 1646814253000,
+                    "expireUsingTime": 1662739199000,
+                    "startHoldingTime": 1646621869000,
+                    "expireHoldingTime": 1647917869000,
+                    "validityUsingPeriod": 184
+                }
+            },
+			{
+                "siCode": "DIAMOND_VIP",
+                "instanceId": "3FO4K6F097XO",
+                "sourceId": 7,
+                "code": "SI0000k7urm",
+                "status": 1,
+                "type": 0,
+                "isBindUser": false,
+                "validityPeriod": {
+                    "startTime": 1646814253000,
+                    "endTime": 1662739199000,
+                    "validStartTime": 1646814253000,
+                    "validEndTime": 1662739199000,
+                    "startUsingTime": 1646814253000,
+                    "expireUsingTime": 1662739199000,
+                    "startHoldingTime": 1646621869000,
+                    "expireHoldingTime": 1647917869000,
+                    "validityUsingPeriod": 184
+                }
+            },
+            {
+                "siCode": "DIAMOND_VIP",
+                "instanceId": "3FO4K6F094LN",
+                "sourceId": 7,
+                "code": "SI0000k7uuh",
+                "status": 1,
+                "type": 0,
+                "isBindUser": false,
+                "validityPeriod": {
+                    "startTime": 1646814253000,
+                    "endTime": 1662739199000,
+                    "validStartTime": 1646814253000,
+                    "validEndTime": 1662739199000,
+                    "startUsingTime": 1646814253000,
+                    "expireUsingTime": 1662739199000,
+                    "startHoldingTime": 1646621869000,
+                    "expireHoldingTime": 1647917869000,
+                    "validityUsingPeriod": 184
+                }
+            }
+        ]
+    }
+}

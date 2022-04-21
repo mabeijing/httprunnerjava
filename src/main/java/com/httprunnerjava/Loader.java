@@ -63,6 +63,10 @@ public class Loader {
         return CompilerFile.loadClass(module);
     }
 
+    public static Class<?> loadLoadFileClass(){
+        return CompilerFile.loadLoadFileClass();
+    }
+
     public static List<Map<String,String>> load_csv_file(String csv_file){
         Path path = Paths.get(csv_file);
         //TODO:暂时只支持加载resource目录下的文件

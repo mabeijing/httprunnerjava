@@ -2,6 +2,7 @@ package com.httprunnerjava.utils;
 
 
 import com.httprunnerjava.builtin.Comparator;
+import com.httprunnerjava.builtin.LoadFile;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,6 +141,16 @@ public class CompilerFile {
         //TODO： hrun这里获取了builtin模块下的两个文件内容，这里只获取了Comparator类的方法
         try{
             return Comparator.class;
+        }catch (Exception e) {
+            log.error(String.valueOf(e.getStackTrace()));
+        }
+        return null;
+    }
+
+    public static Class<?> loadLoadFileClass(){
+        //TODO： hrun这里获取了builtin模块下的两个文件内容，这里只获取了Comparator类的方法
+        try{
+            return LoadFile.class;
         }catch (Exception e) {
             log.error(String.valueOf(e.getStackTrace()));
         }
