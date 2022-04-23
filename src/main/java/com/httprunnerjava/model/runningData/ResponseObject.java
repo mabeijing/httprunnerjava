@@ -43,7 +43,7 @@ public class ResponseObject {
     //TODO：下面两个对象需要做成jsonObjec形式
     private Object headers;
     private Object cookies;
-    private JSONObject body;
+    private Object body;
     private Object srcBody;
 
     private Response srcRespObj;
@@ -57,7 +57,14 @@ public class ResponseObject {
         this.statusCode = srcRespObj.code();
         this.headers = srcRespObj.headers();
         this.cookies = srcRespObj.header("cookie");
-        this.body = JSONObject.parseObject(ResponseObject.getCurrentRespBody());
+        Optional.ofNullable(ResponseObject.getCurrentRespBody()).ifPresent( respBody ->{
+            try{
+                body = JSONObject.parse(ResponseObject.getCurrentRespBody());
+            }catch (Exception e){
+                log.error("reponseBody无法成功解析为json，请确认响应是否正确。");
+                HrunExceptionFactory.create("E0012");
+            }
+        });
     }
 
     public void validate(List<Validator> validators,
@@ -117,8 +124,11 @@ public class ResponseObject {
                     expectValue == null ? "null" : expectValue.getClass());
             try{
                 if(check_item_valued == null){
-                    if( String.valueOf(expectValue).equals("NULL") || String.valueOf(expectValue).equals("None"))
+                    if( String.valueOf(expectValue).equals("NULL") || String.valueOf(expectValue).equals("None")) {
                         continue;
+                    }else{
+                        HrunExceptionFactory.create("E0011");
+                    }
                 } else {
                     Comparator<?> comparator = new Comparator(check_item_valued);
                     assert_func.invoke(comparator, check_item_valued, expectValue);
@@ -142,7 +152,6 @@ public class ResponseObject {
                         log.error("work exception" + HrunBizException.toStackTrace(e));
                     }
                 } else {
-                    log.error(e.toString());
                     log.error("work exception" + ExcpUtil.getStackTraceString(e));
                 }
             }
@@ -227,7 +236,11 @@ public class ResponseObject {
     public String logDetail(){
         return "\n" + "headers: " + Optional.ofNullable(statusCode).map(Object::toString).orElse("NULL") + "\n" +
                 "params: " + Optional.ofNullable(headers).map(Object::toString).orElse("NULL") + "\n" +
-                "req_json: " + Optional.ofNullable(body).map(JSON::toString).orElse("NULL") + "\n";
+                "req_json: " + Optional.ofNullable(body).map(Object::toString).orElse("NULL") + "\n";
 
     }
+
+
+
+
 }
