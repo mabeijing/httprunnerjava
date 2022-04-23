@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.httprunnerjava.exception.CompareError;
 import com.httprunnerjava.utils.JsonUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,9 +12,8 @@ import java.util.List;
 
 //caution！！！
 // 所有比对方法抛出的HrunBizException类异常，都会被上层的validate方法捕获，这里的异常抛出，只是为了表明是某个方法的某类错误，不会被上层逻辑发现。
+@Slf4j
 public class Comparator<T> {
-    static Logger logger = LoggerFactory.getLogger(Comparator.class);
-
     private final Class<?> cls;
 
     public Comparator(T t1) {
@@ -22,7 +22,7 @@ public class Comparator<T> {
 
     public void objectEequals(T checkalue, T expectValue) {
         if (!checkalue.equals(expectValue)) {
-            logger.error("期望值是：" + checkalue + ",实际值是：" + expectValue);
+            log.error("期望值是：" + checkalue + ",实际值是：" + expectValue);
             throw new CompareError("比对结果与预期不一致");
         }
     }
@@ -52,6 +52,18 @@ public class Comparator<T> {
                 }
             } else {
                 throw new CompareError("比对结果与预期不一致");
+        }
+    }
+
+    public void listSize(T checkalue, Object expectValue) {
+        JSONArray expectValueArray;
+        if (checkalue instanceof JSONArray) {
+            if (!expectValue.equals(((JSONArray) checkalue).size())){
+                log.error("校验的list与预期size不一致");
+                throw new CompareError("比对结果与预期不一致");
+            }
+        } else {
+            throw new CompareError("比对结果与预期不一致");
         }
     }
 

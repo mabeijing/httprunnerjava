@@ -51,6 +51,11 @@ public class StepRequestValidation extends Step{
         return this;
     }
 
+    public StepRequestValidation listSize(String jmesPath, Object expectedValue) {
+        getValidators().add(new Validator("listSize",jmesPath,expectedValue, null));
+        return this;
+    }
+
     public StepRequestValidation assertTypeMatch(String jmesPath, Object expectedValue){
         return typeMatch(jmesPath,expectedValue,null);
     }
