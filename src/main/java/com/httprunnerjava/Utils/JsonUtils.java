@@ -89,10 +89,6 @@ public class JsonUtils {
     }
 
     public static void containJsonArray(JSONArray check_value, JSONArray expect_value, String key){
-        //数组存在无序的情况，所以需要将1中的每一个元素，跟2中的所有元素进行比较。
-        //两种方案：1.先对两个jsonArray进行排序，然后再依次比较。
-        // 2.对1中的每一个元素，判断是否在2中存在。(有重复元素的可能会有问题。)
-        //方案2的实现：
         boolean isDifferent = false;
         for (Object o1 : expect_value) {
             if (!check_value.contains(o1)) {

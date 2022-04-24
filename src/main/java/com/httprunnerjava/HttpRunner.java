@@ -124,6 +124,8 @@ public class HttpRunner {
         Variables configVariables = getConfig().getVariables();
         configVariables.update(sessionVariables);
 
+        configVariables.update(projectMeta.getEnvVar());
+
         getConfig().setName(getConfig().getName().parse(
                 configVariables, projectMeta.getFunctions()
         ));

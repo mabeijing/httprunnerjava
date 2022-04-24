@@ -19,7 +19,6 @@ public class ComplexResultValidateTest extends HttpRunner {
     private Config config = new Config("ComplexResultValidateTest")
             .variables("{'foo1':'config_bar1','foo2':'config_bar2','expect_foo1':'config_bar1','expect_foo2': 'config_bar2'}")
             .base_url("http://postman-echo.com")
-            .withLocalDebug(true)
             .verify(false)
             .export("['foo3']");
 
