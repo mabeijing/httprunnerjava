@@ -87,10 +87,15 @@ public class Loader {
     public static Map<String,Object> loadEnvFile(){
         HashMap<String,Object> result; ;
         Yaml yaml = new Yaml();
-        Map<String, Object> load = yaml.loadAs(new InputStreamReader(
-                Objects.requireNonNull(HttpRunner.class.getResourceAsStream("/env.yml")), StandardCharsets.UTF_8),
-                Map.class
-        );
+        Map<String, Object> load = new HashMap<>();
+        InputStream inputStream = HttpRunner.class.getResourceAsStream("/env.yml");
+        if(inputStream != null){
+            load = yaml.loadAs(new InputStreamReader(
+                            Objects.requireNonNull(HttpRunner.class.getResourceAsStream("/env.yml")), StandardCharsets.UTF_8),
+                    Map.class
+            );
+        }
+
         return load;
     }
 

@@ -36,12 +36,18 @@ public class JsonUtils {
 
         if (json1 instanceof JSONObject){
             if(json2 instanceof String)
-                compareJson((String)((JSONObject) json1).toJSONString(), (String)json2);
+                compareJson(
+                        JSON.toJSONString((JSONObject) json1, SerializerFeature.WRITE_MAP_NULL_FEATURES),
+                        (String)json2
+                );
             else
                 compareJson((JSONObject)json1, (JSONObject)json2);
         } else if(json1 instanceof JSONArray){
             if(json2 instanceof String)
-                compareJson((String)((JSONArray) json1).toJSONString(), (String)json2);
+                compareJson(
+                        JSON.toJSONString((JSONArray) json1, SerializerFeature.WRITE_MAP_NULL_FEATURES),
+                        (String)json2
+                );
             else
                 compareJson((JSONArray)json1, (JSONArray)json2);
         } else {

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.httprunnerjava.exception.ParseError;
 import com.httprunnerjava.model.lazyLoading.LazyString;
 import lombok.Data;
@@ -113,9 +114,9 @@ public class ReqJson {
         if(Objects.equals(type, STRING_OBJ_TYPE))
             return this.getStrObj().getEvalString();
         else if(Objects.equals(type, LIST_OBJ_TYPE))
-            return JSON.toJSONString(this.listObj);
+            return JSON.toJSONString(this.listObj,SerializerFeature.WriteNullStringAsEmpty);
         else
-            return JSON.toJSONString(this.mapObj);
+            return JSON.toJSONString(this.mapObj,SerializerFeature.WriteNullStringAsEmpty);
     }
 
 
