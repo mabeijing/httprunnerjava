@@ -89,9 +89,9 @@ public class LazyString extends LazyContent<String>{
                         List<Object> funcParams = new ArrayList<Object>();
                         for(Object each : parsed_args){
                             if(each instanceof LazyString)
-                                funcParams.add((((LazyString)each).parse(variablesMapping,functionsMapping)).getEvalValue());
+                                funcParams.add((((LazyString)each).parse(variablesMapping,functionsMapping)).getEvalString());
                             else
-                                funcParams.add(each);
+                                funcParams.add(String.valueOf(each));
                         }
                         Object obj = functionsMapping.newInstance();
                         if(funcParams.size() == 0){

@@ -15,7 +15,6 @@ import java.util.List;
 public class SingleRequestStep extends HttpRunner {
 
     private Config config = new Config("config_name with variables,the viriables is $$var1: $var1")
-            .variables("{'var1':'config_var1'}")
             .base_url("https://postman-echo.com")
             .verify(false)
             .export("['foo3']");
