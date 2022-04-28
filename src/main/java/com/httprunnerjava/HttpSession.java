@@ -175,7 +175,11 @@ public class HttpSession {
                             orElse(new LazyString("")).getEvalValue().toString();
                     if(contentType.contains("application/json")){
                         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
-                        requestBody = RequestBody.create(tRequest.getReqJson().getEvalString(),mediaType);
+                        if(tRequest.getReqJson() != null){
+                            requestBody = RequestBody.create(tRequest.getReqJson().getEvalString(),mediaType);
+                        }else{
+                            requestBody = RequestBody.create("",mediaType);
+                        }
                     }else if(contentType.contains("application/form-data")){
 
                     }else if(contentType.contains("application/x-www-form-urlencoded")){
