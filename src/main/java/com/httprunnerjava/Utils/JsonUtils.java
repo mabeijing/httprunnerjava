@@ -130,7 +130,7 @@ public class JsonUtils {
             Map json = JSONObject.parseObject(str, Map.class);
             return json;
         }catch (Exception e){
-            log.error("解析JSON中出现错误，待解析的字符串是：" + str);
+            log.error("解析JSON中出现错误，请尝试增加或修改引号或单引号，待解析的字符串是：" + str);
             throw e;
         }
     }
