@@ -121,10 +121,12 @@ public class ResponseObject {
                     check_item,
                     assert_method,
                     expectValue,
-                    expectValue == null ? "null" : expectValue.getClass());
+                    expectValue == null ? "NULL" : expectValue.getClass());
             try{
                 if(check_item_valued == null){
-                    if( String.valueOf(expectValue).equals("NULL") || String.valueOf(expectValue).equals("None")) {
+                    if( expectValue == null
+                            || String.valueOf(expectValue).equals("NULL")
+                            || String.valueOf(expectValue).equals("None")) {
                         continue;
                     }else{
                         HrunExceptionFactory.create("E0011");
