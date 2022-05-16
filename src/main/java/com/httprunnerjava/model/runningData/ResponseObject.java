@@ -127,7 +127,7 @@ public class ResponseObject {
                     if( expectValue == null
                             || String.valueOf(expectValue).equals("NULL")
                             || String.valueOf(expectValue).equals("None")) {
-                        continue;
+                        ;
                     }else{
                         HrunExceptionFactory.create("E0011");
                     }

@@ -250,7 +250,7 @@ public class HttpRunner {
 
         // prepare arguments
         MethodEnum method = parsedRequestDict.getMethod();
-        String urlPath = parsedRequestDict.getUrl();
+        String urlPath = parsedRequestDict.getUrl().getEvalString();
 
         String url = CommonUtils.buildUrl(getConfig().getBaseUrl().getRawValue(), urlPath);
         parsedRequestDict.setVerify(getConfig().getVerify());
