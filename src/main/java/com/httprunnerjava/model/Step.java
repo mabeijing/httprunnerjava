@@ -86,23 +86,27 @@ public class Step {
         export = step.getExport();
         validators = step.getValidators();
         validate_script = step.getValidate_script();
+        apiPath = step.getRequest() == null ? "" : step.getRequest().getUrl().getRawValue();
     }
 
     public String toString(){
         StringBuffer result = new StringBuffer()
-                .append("name           : " + Optional.ofNullable(name).orElse("") + "\n")
-                .append("request        : " + Optional.ofNullable(request).orElse(new TRequest()).toString() + "\n")
-//                .append("testcase       : " + Optional.ofNullable(testcase).orElse(new H).toString() + "\n")
-//                .append("testcasestr    : " + Optional.ofNullable(testcasestr).orElse("").toString() + "\n")
-//                .append("testcasecall   : " + Optional.ofNullable(response).orElse(new Response()).toString() + "\n")
-                .append("variables      : " + Optional.ofNullable(variables).orElse(new Variables()).toString() + "\n")
-                .append("setupHooks     : " + Optional.ofNullable(setupHooks).orElse(new Hooks()).toString() + "\n")
-                .append("teardownHooks  : " + Optional.ofNullable(teardownHooks).orElse(new Hooks()).toString() + "\n")
-                .append("extract        : " + Optional.ofNullable(extract).orElse(new HashMap<>()).toString() + "\n")
-                .append("export         : " + Optional.ofNullable(export).orElse(new Export()).toString() + "\n")
-                .append("validators     : " + Optional.ofNullable(validators).orElse(new ArrayList<>()).toString() + "\n");
+                .append("name=" + Optional.ofNullable(name).orElse("") + "\n")
+                .append("request=" + Optional.ofNullable(request).orElse(new TRequest()).toString() + ",\n")
+//                .append("testcase=" + Optional.ofNullable(testcase).orElse(new H).toString() + "\n")
+//                .append("testcasestr=" + Optional.ofNullable(testcasestr).orElse("").toString() + "\n")
+//                .append("testcasecall=" + Optional.ofNullable(response).orElse(new Response()).toString() + "\n")
+                .append("variables=" + Optional.ofNullable(variables).orElse(new Variables()).toString() + ",\n")
+                .append("setupHooks=" + Optional.ofNullable(setupHooks).orElse(new Hooks()).toString() + ",\n")
+                .append("teardownHooks=" + Optional.ofNullable(teardownHooks).orElse(new Hooks()).toString() + ",\n")
+                .append("extract=" + Optional.ofNullable(extract).orElse(new HashMap<>()).toString() + ",\n")
+                .append("export=" + Optional.ofNullable(export).orElse(new Export()).toString() + ",\n")
+                .append("apiPath=" + Optional.ofNullable(apiPath).orElse("") + ",\n")
+                .append("validators=" + Optional.ofNullable(validators).orElse(new ArrayList<>()).toString() + "\n");
 //                .append("validate_script: " + Optional.ofNullable(response).orElse(new Response()).toString() + "\n");
 
         return result.toString();
     }
+
+    public String apiPath;
 }
