@@ -511,11 +511,12 @@ public class HttpRunner {
         }
     }
 
-    public void manualExecuteSingleTeststep(Integer index, Map<String, Object> params){
+    public StepData manualExecuteSingleTeststep(Integer index, Map<String, Object> params){
         try{
             setUseAllure(false);
             beforeTestStart();
             testStart(getTeststeps().get(index), params);
+            return stepDatas.get(0);
         }catch (Exception e) {
             log.error("手动执行单步case失败！");
             throw e;
