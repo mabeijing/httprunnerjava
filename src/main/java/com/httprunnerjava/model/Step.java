@@ -13,19 +13,22 @@ import com.httprunnerjava.model.component.moleculesComponent.TRequest;
 import com.httprunnerjava.model.lazyLoading.LazyString;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Data
 public class Step {
+
+    final public static List<String> supportMethod = Arrays.asList("GET","POST");
 
     // 步骤的名字
     private String name;
 
     // 封装好的请求体
     private TRequest request;
+
+    private String method;
+
+    private String url;
 
     // http请求的响应
 //    private Response response;
@@ -87,26 +90,33 @@ public class Step {
         validators = step.getValidators();
         validate_script = step.getValidate_script();
         apiPath = step.getRequest() == null ? "" : step.getRequest().getUrl().getRawValue();
+        httpType = step.getRequest() == null ? "" : step.getRequest().getMethod().getMethod();
     }
 
     public String toString(){
         StringBuffer result = new StringBuffer()
-                .append("name=" + Optional.ofNullable(name).orElse("") + "\n")
-                .append("request=" + Optional.ofNullable(request).orElse(new TRequest()).toString() + ",\n")
+                .append("ApolloRunDate [")
+                .append("httpType=" + Optional.ofNullable(httpType).get() + ",")
+                .append("apiPath=" + Optional.ofNullable(apiPath).get() + ",")
+                .append("name=" + Optional.ofNullable(name).orElse("") + ",")
+                .append("request=" + Optional.ofNullable(request).orElse(new TRequest()).toString() + ",")
+                .append("variables=" + Optional.ofNullable(variables).orElse(new Variables()).toString() + ",")
+                .append("setupHooks=" + Optional.ofNullable(setupHooks).orElse(new Hooks()).toString() + ",")
+                .append("teardownHooks=" + Optional.ofNullable(teardownHooks).orElse(new Hooks()).toString() + ",")
+                .append("extract=" + Optional.ofNullable(extract).orElse(new HashMap<>()).toString() + ",")
+                .append("validators=" + Optional.ofNullable(validators).orElse(new ArrayList<>()).toString())
+                .append("]");
+
 //                .append("testcase=" + Optional.ofNullable(testcase).orElse(new H).toString() + "\n")
 //                .append("testcasestr=" + Optional.ofNullable(testcasestr).orElse("").toString() + "\n")
 //                .append("testcasecall=" + Optional.ofNullable(response).orElse(new Response()).toString() + "\n")
-                .append("variables=" + Optional.ofNullable(variables).orElse(new Variables()).toString() + ",\n")
-                .append("setupHooks=" + Optional.ofNullable(setupHooks).orElse(new Hooks()).toString() + ",\n")
-                .append("teardownHooks=" + Optional.ofNullable(teardownHooks).orElse(new Hooks()).toString() + ",\n")
-                .append("extract=" + Optional.ofNullable(extract).orElse(new HashMap<>()).toString() + ",\n")
-                .append("export=" + Optional.ofNullable(export).orElse(new Export()).toString() + ",\n")
-                .append("apiPath=" + Optional.ofNullable(apiPath).orElse("") + ",\n")
-                .append("validators=" + Optional.ofNullable(validators).orElse(new ArrayList<>()).toString() + "\n");
+//                .append("export=" + Optional.ofNullable(export).orElse(new Export()).toString() + ",\n")
 //                .append("validate_script: " + Optional.ofNullable(response).orElse(new Response()).toString() + "\n");
 
         return result.toString();
     }
 
     public String apiPath;
+
+    public String httpType;
 }

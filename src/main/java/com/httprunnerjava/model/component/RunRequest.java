@@ -3,6 +3,7 @@ package com.httprunnerjava.model.component;
 import com.httprunnerjava.model.Step;
 import com.httprunnerjava.model.component.atomsComponent.request.Variables;
 import com.httprunnerjava.model.component.moleculesComponent.TRequest;
+import static com.httprunnerjava.model.Step.supportMethod;
 
 import java.util.Map;
 
@@ -53,6 +54,17 @@ public class RunRequest extends Step {
 
     public RequestWithOptionalArgs post(String url){
         setRequest(new TRequest("POST",url));
+        return new RequestWithOptionalArgs(this);
+    }
+
+    public RunRequest method(String method){
+        if(supportMethod.contains(method.toUpperCase()))
+            setMethod(method);
+        return this;
+    }
+
+    public RequestWithOptionalArgs url(String url){
+        setRequest(new TRequest(getMethod(),url));
         return new RequestWithOptionalArgs(this);
     }
 
