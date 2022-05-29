@@ -59,6 +59,9 @@ public class ReqJson {
 
     public JSONObject parseJson(JSONObject jsonObject, Variables variables_mapping, Class functions_mapping){
         JSONObject result = new JSONObject();
+        if(jsonObject == null ||jsonObject.size() == 0 )
+            return result;
+
         for(String s : jsonObject.keySet()){
             String newKey = new LazyString(s).parse(variables_mapping, functions_mapping).getEvalString();
             if(jsonObject.get(s) instanceof JSONArray){
