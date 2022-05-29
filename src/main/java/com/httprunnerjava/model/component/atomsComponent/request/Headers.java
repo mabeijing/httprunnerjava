@@ -22,6 +22,10 @@ public class Headers implements Serializable {
     }
 
     public Headers(Map<Object,Object> rawHeaders) {
+        if(rawHeaders == null || rawHeaders.size() == 0){
+            return;
+        }
+
         for (Map.Entry entry : rawHeaders.entrySet()) {
             if (entry.getValue() instanceof String) {
                 if (String.valueOf(entry.getKey()).toLowerCase().contains("content-type") || String.valueOf(entry.getKey()).toLowerCase().contains("contenttype"))
