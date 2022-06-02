@@ -10,11 +10,6 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-14-17:10
- * @Description:
- */
 @Getter
 public class ExportTest extends HttpRunner {
 
@@ -45,13 +40,20 @@ public class ExportTest extends HttpRunner {
                 .withHeaders("{'User-Agent': 'HttpRunner/${get_httprunner_version()}'}")
                 .teardownHook("teardown_hooks()")
                 .extract()
-                .withJmespath("body.args.foo2", "foo3")
+                .withJmespath("body.args.foo2", "foo4")
                 .validate()
                 .assertEqual("status_code", 200)
                 .assertEqual("body.args.foo1", "bar11")
                 .assertEqual("body.args.sum_v", "1002")
                 .assertEqual("body.args.foo2", "bar21")
                 .assertEqual("body.args.foo3", "bar21")
+        );
+
+        add(new RunRequest("check extract")
+                .get("/get/$foo4")
+                .withParams("{'foo4': '$foo4'}")
+                .validate()
+                .assertEqual("body.args.foo4", "bar21")
         );
 
     }};

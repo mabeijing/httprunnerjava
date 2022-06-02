@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.httprunnerjava.exception.ParseError;
 import com.httprunnerjava.model.lazyLoading.LazyString;
 import lombok.Data;
@@ -11,11 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-12-17:07
- * @Description:
- */
 @Data
 @Slf4j
 public class ReqJson {
@@ -63,6 +59,9 @@ public class ReqJson {
 
     public JSONObject parseJson(JSONObject jsonObject, Variables variables_mapping, Class functions_mapping){
         JSONObject result = new JSONObject();
+        if(jsonObject == null ||jsonObject.size() == 0 )
+            return result;
+
         for(String s : jsonObject.keySet()){
             String newKey = new LazyString(s).parse(variables_mapping, functions_mapping).getEvalString();
             if(jsonObject.get(s) instanceof JSONArray){
@@ -118,9 +117,9 @@ public class ReqJson {
         if(Objects.equals(type, STRING_OBJ_TYPE))
             return this.getStrObj().getEvalString();
         else if(Objects.equals(type, LIST_OBJ_TYPE))
-            return JSON.toJSONString(this.listObj);
+            return JSON.toJSONString(this.listObj,SerializerFeature.WriteNullStringAsEmpty);
         else
-            return JSON.toJSONString(this.mapObj);
+            return JSON.toJSONString(this.mapObj,SerializerFeature.WriteNullStringAsEmpty);
     }
 
 

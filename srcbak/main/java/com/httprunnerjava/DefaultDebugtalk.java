@@ -3,11 +3,6 @@ package com.httprunnerjava;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-08-23:39
- * @Description:
- */
 public class DefaultDebugtalk {
 
     private static String __version__ = "1.0.0";

@@ -11,11 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-12-16:53
- * @Description:
- */
 @Data
 public class Headers implements Serializable {
     private HashMap<String, LazyContent> content = new HashMap<>();
@@ -27,6 +22,10 @@ public class Headers implements Serializable {
     }
 
     public Headers(Map<Object,Object> rawHeaders) {
+        if(rawHeaders == null || rawHeaders.size() == 0){
+            return;
+        }
+
         for (Map.Entry entry : rawHeaders.entrySet()) {
             if (entry.getValue() instanceof String) {
                 if (String.valueOf(entry.getKey()).toLowerCase().contains("content-type") || String.valueOf(entry.getKey()).toLowerCase().contains("contenttype"))

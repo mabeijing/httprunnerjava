@@ -19,11 +19,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-12-17:23
- * @Description:
- */
 @Data
 @Slf4j
 public class ResponseObject {
@@ -48,7 +43,7 @@ public class ResponseObject {
     //TODO：下面两个对象需要做成jsonObjec形式
     private Object headers;
     private Object cookies;
-    private JSONObject body;
+    private Object body;
     private Object srcBody;
 
     private Response srcRespObj;
@@ -62,7 +57,14 @@ public class ResponseObject {
         this.statusCode = srcRespObj.code();
         this.headers = srcRespObj.headers();
         this.cookies = srcRespObj.header("cookie");
-        this.body = JSONObject.parseObject(ResponseObject.getCurrentRespBody());
+        Optional.ofNullable(ResponseObject.getCurrentRespBody()).ifPresent( respBody ->{
+            try{
+                body = JSONObject.parse(ResponseObject.getCurrentRespBody());
+            }catch (Exception e){
+                log.error("reponseBody无法成功解析为json，请确认响应是否正确。");
+                HrunExceptionFactory.create("E0012");
+            }
+        });
     }
 
     public void validate(List<Validator> validators,
@@ -119,11 +121,16 @@ public class ResponseObject {
                     check_item,
                     assert_method,
                     expectValue,
-                    expectValue == null ? "null" : expectValue.getClass());
+                    expectValue == null ? "NULL" : expectValue.getClass());
             try{
                 if(check_item_valued == null){
-                    if( String.valueOf(expectValue).equals("NULL") || String.valueOf(expectValue).equals("None"))
-                        continue;
+                    if( expectValue == null
+                            || String.valueOf(expectValue).equals("NULL")
+                            || String.valueOf(expectValue).equals("None")) {
+                        ;
+                    }else{
+                        HrunExceptionFactory.create("E0011");
+                    }
                 } else {
                     Comparator<?> comparator = new Comparator(check_item_valued);
                     assert_func.invoke(comparator, check_item_valued, expectValue);
@@ -144,11 +151,9 @@ public class ResponseObject {
                         failures.add(validate_msg);
                     }else{
                         //如果捕获的异常不属于HrunBizException，则是反射方法执行时出错，需要输出详细的错误信息
-                        log.error(e.toString());
-                        log.error("work exception" + ExcpUtil.getStackTraceString(e));
+                        log.error("work exception" + HrunBizException.toStackTrace(e));
                     }
                 } else {
-                    log.error(e.toString());
                     log.error("work exception" + ExcpUtil.getStackTraceString(e));
                 }
             }
@@ -199,7 +204,6 @@ public class ResponseObject {
                 }
             }
         }catch(Exception e){
-            log.error(String.valueOf(e.getStackTrace()));
             throw new VariableNotFound("需要导出的变量未找到，变量的路径为" + expr);
         }
 
@@ -234,7 +238,11 @@ public class ResponseObject {
     public String logDetail(){
         return "\n" + "headers: " + Optional.ofNullable(statusCode).map(Object::toString).orElse("NULL") + "\n" +
                 "params: " + Optional.ofNullable(headers).map(Object::toString).orElse("NULL") + "\n" +
-                "req_json: " + Optional.ofNullable(body).map(JSON::toString).orElse("NULL") + "\n";
+                "req_json: " + Optional.ofNullable(body).map(Object::toString).orElse("NULL") + "\n";
 
     }
+
+
+
+
 }

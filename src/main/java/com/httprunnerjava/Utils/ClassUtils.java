@@ -37,24 +37,6 @@ public class ClassUtils {
             log.error("com.httprunnerjava.Debugtalk类未找到，请检查hrun.jar当前版本文件是否正确！");
         }
 
-//        try{
-//            String temp = packageName;
-//            while(temp.length()>0){
-//                ca = Class.forName(packageName + ".Debugtalk");
-//                logger.info("在package" + temp + "下找到Debugtalk类，执行过程中的方法将以该类内容为准");
-//                temp = packageName
-//            }
-//            ca = Class.forName(packageName + ".Debugtalk");
-//            logger.info("在当前执行类的相同package下找到Debugtalk类，执行过程中将以该类内容为准");
-//        }catch (ClassNotFoundException e1){
-//            logger.info("没有在当前执行类的相同package下找到Debugtalk类");
-//            try{
-//                ca = Class.forName("com.httprunnerjava.Debugtalk");
-//            }catch (ClassNotFoundException e2){
-//                logger.error("com.httprunnerjava.Debugtalk类未找到，请检查hrun.jar文件是否正确！");
-//            }
-//        }
-
         return ca;
     }
 

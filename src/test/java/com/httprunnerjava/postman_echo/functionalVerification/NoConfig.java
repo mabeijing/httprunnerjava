@@ -9,11 +9,6 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-14-16:46
- * @Description: 没有config部分时，new一个空白的新的config
- */
 @Getter
 public class NoConfig extends HttpRunner {
     public List<Step> teststeps = new ArrayList<Step>(){{

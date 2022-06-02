@@ -5,11 +5,6 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-12-16:43
- * @Description:
- */
 @Data
 public class SessionData {
     private Boolean success;

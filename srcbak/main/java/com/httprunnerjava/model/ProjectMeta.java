@@ -3,11 +3,6 @@ package com.httprunnerjava.model;
 import com.httprunnerjava.DefaultDebugtalk;
 import lombok.Data;
 
-/**
- * @Author: ChuCan
- * @CreatedDate: 2022-04-07-1:43
- * @Description:
- */
 @Data
 public class ProjectMeta {
 

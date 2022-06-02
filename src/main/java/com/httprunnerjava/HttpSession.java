@@ -33,11 +33,6 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @Author: ChuCan
- * @CreatedDate: 2022-04-07-1:45
- * @Description:
- */
 @Data
 @Slf4j
 public class HttpSession {
@@ -180,7 +175,11 @@ public class HttpSession {
                             orElse(new LazyString("")).getEvalValue().toString();
                     if(contentType.contains("application/json")){
                         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
-                        requestBody = RequestBody.create(tRequest.getReqJson().getEvalString(),mediaType);
+                        if(tRequest.getReqJson() != null){
+                            requestBody = RequestBody.create(tRequest.getReqJson().getEvalString(),mediaType);
+                        }else{
+                            requestBody = RequestBody.create("",mediaType);
+                        }
                     }else if(contentType.contains("application/form-data")){
 
                     }else if(contentType.contains("application/x-www-form-urlencoded")){
@@ -284,7 +283,7 @@ public class HttpSession {
         ResponseData responseData = new ResponseData(respObj.code(),
                 respHeaders,
                 "",
-                respObj.body().contentType().toString(),
+                respObj.body().contentType() == null ? "NULL" : respObj.body().contentType().toString(),
                 respObj.header("content-type"),
                 respText
         );

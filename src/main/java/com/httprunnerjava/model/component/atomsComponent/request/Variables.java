@@ -68,6 +68,22 @@ public class Variables implements Serializable {
         return this;
     }
 
+    public Variables putIfAbsent(Map<String,Object> param){
+        Optional.ofNullable(param).ifPresent( p -> {
+                    param.entrySet().forEach(e -> {
+                        if (e.getValue() instanceof String)
+                            this.getContent().putIfAbsent(e.getKey(), new LazyString(String.valueOf(e.getValue())));
+                        else if (e.getValue() instanceof LazyContent)
+                            this.getContent().putIfAbsent(e.getKey(), (LazyContent) e.getValue());
+                        else if (e.getValue() instanceof LazyString)
+                            this.getContent().putIfAbsent(e.getKey(), (LazyString) e.getValue());
+                        else
+                            this.getContent().putIfAbsent(e.getKey(), new LazyContent(e.getValue()));
+                    });
+        });
+        return this;
+    }
+
     public Integer size(){
         return this.content.size();
     }

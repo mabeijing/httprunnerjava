@@ -4,11 +4,6 @@ import com.httprunnerjava.model.Enum.MethodEnum;
 import com.httprunnerjava.model.component.atomsComponent.request.Headers;
 import com.httprunnerjava.model.component.intf.reqOrResp;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-12-16:51
- * @Description:
- */
 public class RequestData implements reqOrResp {
     MethodEnum method;
     String url;

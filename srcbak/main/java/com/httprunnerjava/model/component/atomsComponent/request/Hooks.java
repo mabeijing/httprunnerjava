@@ -11,11 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @Author: ChuCan
- * @CreatedDate: 2022-04-07-1:40
- * @Description:
- */
 @Slf4j
 @Data
 public class Hooks {

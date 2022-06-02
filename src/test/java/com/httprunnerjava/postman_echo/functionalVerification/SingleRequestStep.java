@@ -11,16 +11,10 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-14-17:10
- * @Description:
- */
 @Getter
 public class SingleRequestStep extends HttpRunner {
 
     private Config config = new Config("config_name with variables,the viriables is $$var1: $var1")
-            .variables("{'var1':'config_var1'}")
             .base_url("https://postman-echo.com")
             .verify(false)
             .export("['foo3']");

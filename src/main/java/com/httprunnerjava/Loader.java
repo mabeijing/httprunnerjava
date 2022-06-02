@@ -6,21 +6,20 @@ import com.httprunnerjava.model.lazyLoading.LazyString;
 import com.httprunnerjava.utils.CSVFileUtil;
 import com.httprunnerjava.utils.ClassUtils;
 import com.httprunnerjava.utils.CompilerFile;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-09-1:17
- * @Description:
- */
+@Slf4j
 public class Loader {
 
     // 这里和hrun原版稍有差别，如果以后想支持多线程执行，那么线程变量必不可少，其实这里也是一种推测，目前也用不到
@@ -57,6 +56,7 @@ public class Loader {
         if(!Strings.isNullOrEmpty(testPackagePath))
             projectMeta.setFunctions(ClassUtils.getDefaultDebugtalkClass(testPackagePath));
 
+        projectMeta.setEnvVar(loadEnvFile());
         projectMetaContext.set(projectMeta);
     }
 
@@ -66,6 +66,10 @@ public class Loader {
 
     public static Class<?> load_module_functions(String module) {
         return CompilerFile.loadClass(module);
+    }
+
+    public static Class<?> loadLoadFileClass(){
+        return CompilerFile.loadLoadFileClass();
     }
 
     public static List<Map<String,String>> load_csv_file(String csv_file){
@@ -78,6 +82,21 @@ public class Loader {
         List<Map<String, String>> mapList = CSVFileUtil.parseList(lines);
         System.out.println(Arrays.toString(mapList.toArray()));
         return mapList;
+    }
+
+    public static Map<String,Object> loadEnvFile(){
+        HashMap<String,Object> result; ;
+        Yaml yaml = new Yaml();
+        Map<String, Object> load = new HashMap<>();
+        InputStream inputStream = HttpRunner.class.getResourceAsStream("/env.yml");
+        if(inputStream != null){
+            load = yaml.loadAs(new InputStreamReader(
+                            Objects.requireNonNull(HttpRunner.class.getResourceAsStream("/env.yml")), StandardCharsets.UTF_8),
+                    Map.class
+            );
+        }
+
+        return load;
     }
 
 

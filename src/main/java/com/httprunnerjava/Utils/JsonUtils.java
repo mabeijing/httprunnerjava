@@ -2,78 +2,99 @@ package com.httprunnerjava.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.httprunnerjava.exception.CompareError;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Map;
+import java.util.*;
 
-/**
- * @Author: ChuCan
- * @CreatedDate: 2022-04-07-1:51
- * @Description:
- */
 @Slf4j
 public class JsonUtils {
 
-    public static Map parseJsonStrToMap(String str){
-        try {
-            Map json = JSONObject.parseObject(str, Map.class);
-            return json;
-        }catch (Exception e){
-            log.error("解析JSON中出现错误，待解析的字符串是：" + str);
-            throw e;
-        }
+    public static void compareJson(String json1, String json2) {
+        log.info("json1: " + json1);
+        log.info("json2: " + json2);
+        Object jsonObj1 = JSONObject.parse(json1);
+        Object jsonObj2 = JSONObject.parse(json2);
+        compareJson(jsonObj1, jsonObj2);
     }
 
-    public static void compareJsons(JSONObject json1, JSONObject json2, String key){
-        commonCompare(json1,json2,key);
-        for (String s : json1.keySet()) {
-            key = s;
-            compareJsons(json1.get(key), json2.get(key), key);
-        }
-    }
+    public static void compareJson(Object json1, Object json2) {
+        if((json1 == null && json2 == null) || (json1 != null && json1.equals(json2)))
+            return;
 
-    public static void compareJsons(Object json1,Object json2, String key){
-        commonCompare(json1,json2,key);
+        if(json1 instanceof String && json2 instanceof String){
+            try{
+                compareJson((String)json1,(String)json2);
+                return;
+            }catch(JSONException e){
+                throw new CompareError("要比对的json不一致!");
+            }
+        }
+
         if (json1 instanceof JSONObject){
-            //如果是JSONObject则继续递归比较。
-            compareJsons((JSONObject) json1,(JSONObject) json2, key);
-        } else if (json1 instanceof JSONArray){
-            //如果是JSONArray，则进行数组类比较。
-            compareJsons((JSONArray) json1,(JSONArray) json2,key);
-        }  else {
-            //其余全部为字符串比较，非字符串的也转换为字符串比较。
-            compareJsons(json1.toString(),json2.toString(),key);
+            if(json2 instanceof String)
+                compareJson(
+                        JSON.toJSONString((JSONObject) json1, SerializerFeature.WRITE_MAP_NULL_FEATURES),
+                        (String)json2
+                );
+            else
+                compareJson((JSONObject)json1, (JSONObject)json2);
+        } else if(json1 instanceof JSONArray){
+            if(json2 instanceof String)
+                compareJson(
+                        JSON.toJSONString((JSONArray) json1, SerializerFeature.WRITE_MAP_NULL_FEATURES),
+                        (String)json2
+                );
+            else
+                compareJson((JSONArray)json1, (JSONArray)json2);
+        } else {
+            throw new CompareError("要比对的json不一致!");
         }
     }
 
-    public static void compareJsons(JSONArray jsonArray1, JSONArray jsonArray2, String key){
-        commonCompare(jsonArray1,jsonArray2,key);
-        //数组存在无序的情况，所以需要将1中的每一个元素，跟2中的所有元素进行比较。
-        //两种方案：1.先对两个jsonArray进行排序，然后再依次比较。
-        // 2.对1中的每一个元素，判断是否在2中存在。(有重复元素的可能会有问题。)
-        //方案2的实现：
-        for (Object o1 : jsonArray1) {
-            if (!jsonArray2.contains(o1)) {
-                log.error("不一致：key  " + key + " json1中的 jsonArray其中的value ： " + JSONObject.toJSONString(o1) + "  仅在json1中存在，不在json2中存在");
-                throw new CompareError("JSON比对结果不一致");
-            }
+    public static void compareJson(JSONArray jsonArray1, JSONArray jsonArray2) {
+        if(jsonArray1.size() != jsonArray2.size()){
+            throw new CompareError("要比对的json不一致!");
         }
 
-        for (Object o2 : jsonArray2) {
-            if (!jsonArray1.contains(o2)) {
-                log.error("不一致：key " + key + " json2中的 jsonArray其中的value ： " + JSONObject.toJSONString(o2) + "  仅在json2中存在，不在json1中存在");
-                throw new CompareError("JSON比对结果不一致");
+        Iterator i1 = jsonArray1.iterator();
+        while (i1.hasNext()) {
+            Object temp1 = i1.next();
+            Boolean isSame = false;
+            Iterator i2 = jsonArray2.iterator();
+            while (i2.hasNext()){
+                try{
+                    compareJson(temp1, i2.next());
+                }catch(CompareError e){
+                    continue;
+                }
+                isSame = true;
+                break;
             }
+            if(!isSame)
+                throw new CompareError("要比对的json不一致!");
+        }
+    }
+
+    public static void compareJson(JSONObject jsonObject1, JSONObject jsonObject2) {
+        if(jsonObject1.size() != jsonObject2.size()){
+            throw new CompareError("要比对的json不一致!");
+        }
+
+        Iterator<String> iterator = jsonObject1.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+
+            Object value1 = jsonObject1.get(key);
+            Object value2 = jsonObject2.get(key);
+            compareJson(value1, value2);
         }
     }
 
     public static void containJsonArray(JSONArray check_value, JSONArray expect_value, String key){
-        //数组存在无序的情况，所以需要将1中的每一个元素，跟2中的所有元素进行比较。
-        //两种方案：1.先对两个jsonArray进行排序，然后再依次比较。
-        // 2.对1中的每一个元素，判断是否在2中存在。(有重复元素的可能会有问题。)
-        //方案2的实现：
         boolean isDifferent = false;
         for (Object o1 : expect_value) {
             if (!check_value.contains(o1)) {
@@ -84,32 +105,6 @@ public class JsonUtils {
         if(isDifferent)
             throw new CompareError("JSON比对结果不一致");
     }
-
-    public static void compareJsons(String json1,String json2,String key){
-        commonCompare(json1,json2,key);
-        if (json1.equals(json2)){
-            System.out.println("一致：key " + key + " ， json1 value = " + json1 + " json2 value = " + json2);
-        } else {
-            System.err.println("不一致： key " + key + " ， json1 value = " + json1 + " json2 value = " + json2 );
-            throw new CompareError("JSON比对结果不一致");
-        }
-
-    }
-
-    public static void commonCompare(Object json1,Object json2,String key){
-        if (json1 == null && json2 == null){
-            System.err.println("不一致： key " + key + " 在两者中均不存在");
-        }
-        if (json1 == null){
-            System.err.println("不一致： key " + key + " 在json1中不存在，在json2中为 " + JSONObject.toJSONString(json2) );
-            throw new CompareError("JSON比对结果不一致");
-        }
-        if (json2 == null){
-            System.err.println("不一致： key " + key + " 在json1中为 " + JSONObject.toJSONString(json2) + " 在json2中不存在" );
-            throw new CompareError("JSON比对结果不一致");
-        }
-    }
-
 
     public static Object getByNumKey(JSON data, String key){
         //两种形式，一种是传入jsonobject，key是数字型的字符串
@@ -128,5 +123,15 @@ public class JsonUtils {
             data = ((JSONObject)data).getJSONArray(key);
         }
         return data;
+    }
+
+    public static Map parseJsonStrToMap(String str){
+        try {
+            Map json = JSONObject.parseObject(str, Map.class);
+            return json;
+        }catch (Exception e){
+            log.error("解析JSON中出现错误，请尝试增加或修改引号或单引号，待解析的字符串是：" + str);
+            throw e;
+        }
     }
 }

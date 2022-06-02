@@ -3,11 +3,6 @@ package com.httprunnerjava.model.runningData;
 import com.httprunnerjava.model.component.atomsComponent.request.Headers;
 import com.httprunnerjava.model.component.intf.reqOrResp;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-12-16:54
- * @Description:
- */
 public class ResponseData implements reqOrResp {
     private Integer status_code;
     private Headers headers;

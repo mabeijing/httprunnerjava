@@ -15,16 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @Author: ChuCan
- * @CreatedDate: 2022-04-07-1:38
- * @Description:
- */
 @Data
 @NoArgsConstructor
 public class TRequest {
     private MethodEnum method;
-    private String url;
+    private LazyString url;
     private Params params;
     private Headers headers;
     private ReqJson reqJson;
@@ -38,7 +33,7 @@ public class TRequest {
 
     public TRequest(String method, String url) {
         this.method = MethodEnum.getMethodEnum(method);
-        this.url = url;
+        this.url = new LazyString(url);
         this.headers = new Headers();
         this.params = new Params();
     }
@@ -56,6 +51,7 @@ public class TRequest {
         Optional.ofNullable(params).ifPresent(p -> p.parse(variablesMapping, functionsMapping));
         Optional.ofNullable(reqJson).ifPresent(r -> r.parse(variablesMapping, functionsMapping));
         Optional.ofNullable(data).ifPresent(d -> d.parse(variablesMapping, functionsMapping));
+        Optional.ofNullable(url).ifPresent(u -> u.parse(variablesMapping, functionsMapping));
         return this;
     }
 
@@ -64,6 +60,7 @@ public class TRequest {
                 "params: " + Optional.ofNullable(params).map(Params::toString).orElse("NULL") + "\n" +
                 "reqJson: " + Optional.ofNullable(reqJson).map(ReqJson::toString).orElse("NULL") + "\n" +
                 "data: " + Optional.ofNullable(data).map(LazyContent::toString).orElse("NULL") + "\n" +
-                "timeout: " + Optional.ofNullable(timeout).map(Object::toString).orElse("NULL") + "\n";
+                "timeout: " + Optional.ofNullable(timeout).map(Object::toString).orElse("NULL") + "\n" +
+                "url: " + Optional.ofNullable(url).map(Object::toString).orElse("NULL") + "\n";
     }
 }

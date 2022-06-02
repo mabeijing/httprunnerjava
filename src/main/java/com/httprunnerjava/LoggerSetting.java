@@ -4,11 +4,6 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import org.slf4j.LoggerFactory;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-08-23:27
- * @Description:
- */
 public class LoggerSetting {
     public static void setLogLevel(String log_level){
         try {

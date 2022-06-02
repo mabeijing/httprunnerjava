@@ -19,11 +19,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-/**
- * @Author: Yeman
- * @CreatedDate: 2022-04-12-17:23
- * @Description:
- */
 @Data
 @Slf4j
 public class ResponseObject {

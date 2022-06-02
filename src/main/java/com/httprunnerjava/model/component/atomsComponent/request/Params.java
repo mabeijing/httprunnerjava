@@ -20,8 +20,12 @@ public class Params implements Serializable {
         this(CommonUtils.parseJsonStrToMap(str));
     }
 
-    public Params(Map<Object,Object> raw_params) {
-        for (Map.Entry<Object,Object> entry : raw_params.entrySet()) {
+    public Params(Map<Object,Object> rawParams) {
+        if(rawParams == null || rawParams.size() == 0){
+            return;
+        }
+        
+        for (Map.Entry<Object,Object> entry : rawParams.entrySet()) {
             if (entry.getValue() instanceof String )
                 content.put(String.valueOf(entry.getKey()), new LazyString(String.valueOf(entry.getValue())));
             else

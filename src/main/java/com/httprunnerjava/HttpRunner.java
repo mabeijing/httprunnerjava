@@ -12,10 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * @Author: cc
- * @CreatedDate: 2022-04-01 23:48
- * @Description: HttpRunnerForJava的主类，也是所有方法的入口类，所有基于HttpRunnerForJava的测试用例，都需要继承该类
  */
 
 package com.httprunnerjava;
@@ -127,6 +123,8 @@ public class HttpRunner {
 
         Variables configVariables = getConfig().getVariables();
         configVariables.update(sessionVariables);
+
+        configVariables.update(projectMeta.getEnvVar());
 
         getConfig().setName(getConfig().getName().parse(
                 configVariables, projectMeta.getFunctions()
@@ -252,7 +250,7 @@ public class HttpRunner {
 
         // prepare arguments
         MethodEnum method = parsedRequestDict.getMethod();
-        String urlPath = parsedRequestDict.getUrl();
+        String urlPath = parsedRequestDict.getUrl().getEvalString();
 
         String url = CommonUtils.buildUrl(getConfig().getBaseUrl().getRawValue(), urlPath);
         parsedRequestDict.setVerify(getConfig().getVerify());
@@ -341,11 +339,11 @@ public class HttpRunner {
                 try{
                     hook.getFuncHook().parse(stepVariables, projectMeta.getFunctions());
                 }catch(Exception e){
-                    log.error("钩子函数执行异常，执行的钩子函数是：" + hook.toString());
                     if(!hook.getNoThrowException()) {
+                        log.error("钩子函数执行异常，执行的钩子函数是：" + hook.toString());
                         throw e;
                     }
-
+                    log.warn("钩子函数执行异常，但不会终端用例执行，出现错误的钩子函数是：" + hook.toString());
                 }
             } else if(hook.getType() == 2 && hook.getMapHook().size() == 1) {
                 // format 2: {"var": "${func()}"}
@@ -355,9 +353,11 @@ public class HttpRunner {
                             stepVariables, projectMeta.getFunctions()
                     );
                 }catch (Exception e){
-                    log.error("钩子函数执行异常，执行的钩子函数是：" + hook.toString());
-                    if(!hook.getNoThrowException())
+                    if(!hook.getNoThrowException()) {
+                        log.error("钩子函数执行异常，执行的钩子函数是：" + hook.toString());
                         throw e;
+                    }
+                    log.warn("钩子函数执行异常，但不会终端用例执行，出现错误的钩子函数是：" + hook.toString());
                 }
                 log.debug(
                         "call hook function: {}, got value: {}",
@@ -494,51 +494,33 @@ public class HttpRunner {
         return this;
     }
 
-    //    public void manualTestStart(Map<String,Object> param){
-//        this.initTests();
-//
-//        if( this.projectMeta == null ){
-//            projectMeta = Optional.ofNullable(projectMeta).orElseGet( () ->
-//                    load_project_meta(
-//                            Optional.ofNullable(this.config.getPath())
-//                                    .orElseGet(() -> {
-//                                        log.info("config中未指定debugtalk文件位置，默认优先获取测试执行类所在目录，其次取HttpRunner所在目录下的默认Debugtal文件");
-//                                        return new LazyString(this.getClass().getPackage().getName());
-//                                    }))
-//            );
-//        }
-//
-//        if(Strings.isNullOrEmpty(caseId))
-//            this.caseId = UUID.randomUUID().toString();
-//
-//        Variables config_variables = this.tConfig.getVariables();
-//        if(param != null && !param.isEmpty()){
-//            config_variables.update(param);
-//        }
-//        config_variables.update(this.sessionVariables);
-//        tConfig.setName(tConfig.getName().parse(config_variables, projectMeta.functions));
-//
-//
-//        Allure.getLifecycle().updateTestCase(result -> result.setName(tConfig.getName().getEvalString()));
-//        Allure.description(String.format("TestCase ID: %s", caseId));
-//
-//        log.info(
-//                String.format("Start to run testcase: %s, TestCase ID: %s",this.tConfig.getName().getEvalString(),this.getCaseId())
-//        );
-//
-//        try{
-//            runTestcase(
-//                    new TestCase(this.tConfig, this.tTestSteps)
-//            );
-//        }catch(Exception e){
-//            if(this.getConfig().getResumeAfterException()){
-//                log.error("执行过程中捕获到异常，但不影响后续执行，错误信息如下");
-//                log.error(String.valueOf(e.getStackTrace()));
-//            }else{
-//                throw e;
-//            }
-//        } finally {
-//            log.info("TODO：generate testcase log: {self.__log_path}");
-//        }
-//    }
+    // 手动执行teststep的入口
+    // 手动执行所有的步骤
+    public void manualExecuteAllTestStep(Map<String, Object> params){
+        try{
+            setUseAllure(false);
+
+            beforeTestStart();
+
+            for (Step step : getTeststeps()) {
+                testStart(step, params);
+            }
+        }catch (Exception e) {
+            log.error("手动执行case失败！");
+            throw e;
+        }
+    }
+
+    public StepData manualExecuteSingleTeststep(Integer index, Map<String, Object> params){
+        try{
+            setUseAllure(false);
+            beforeTestStart();
+            testStart(getTeststeps().get(index), params);
+            return stepDatas.get(0);
+        }catch (Exception e) {
+            log.error("手动执行单步case失败！");
+            throw e;
+        }
+    }
+
 }
